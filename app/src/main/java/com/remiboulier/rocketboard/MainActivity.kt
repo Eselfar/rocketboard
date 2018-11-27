@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import com.afollestad.materialdialogs.MaterialDialog
+import com.remiboulier.rocketboard.extension.displayErrorDialog
+import com.remiboulier.rocketboard.extension.displayProgressDialog
+import com.remiboulier.rocketboard.extension.displayWelcomeDialog
 import com.remiboulier.rocketboard.model.Rocket
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
@@ -38,67 +40,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
 
         if (viewModel.isFirstTime())
-            displayWelcomeDialog { loadData() }
+            displayWelcomeDialog()
         else
             loadData()
-    }
-
-    private fun displayWelcomeDialog(onPositive: () -> Unit) {
-        container.showDialog(MaterialDialog.Builder(this)
-                .title(R.string.app_name)
-                .content(R.string.welcome_message)
-                .cancelable(false)
-                .positiveText(R.string.got_it)
-                .onPositive { _, _ -> onPositive() }
-                .build())
-    }
-
-    fun loadData() {
-        viewModel.loadRockets()
-    }
-
-    private fun updateState(networkState: NetworkState) {
-        when (networkState.status) {
-            Status.RUNNING -> displayProgress()
-            Status.SUCCESS -> hideProgress()
-            Status.FAILED -> displayError(networkState.msg)
-        }
-    }
-
-    private fun displayProgress() {
-        container.showDialog(MaterialDialog.Builder(this)
-                .title(R.string.app_name)
-                .content(R.string.please_wait)
-                .cancelable(false)
-                .progress(true, 0)
-                .build())
-    }
-
-    private fun hideProgress() {
-        container.dismissDialog()
-    }
-
-    private fun displayError(msg: String?) {
-        container.showDialog(MaterialDialog.Builder(this)
-                .title(title)
-                .cancelable(true)
-                .content(msg ?: getString(R.string.an_error_occured))
-                .positiveText(R.string.got_it)
-                .build())
-    }
-
-    fun initAdapter() {
-        adapter = RocketAdapter(mutableListOf(), this::goToDetails)
-        homeRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        homeRecycler.adapter = adapter
-    }
-
-    private fun goToDetails(rocketId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun updateRocketList(rockets: MutableList<Rocket>) {
-        adapter?.updateList(rockets)
     }
 
     override fun onStop() {
@@ -106,6 +50,37 @@ class MainActivity : AppCompatActivity() {
         adapter = null
         container.dismissDialog()
     }
+
+    fun loadData() = viewModel.loadRockets()
+
+    fun initAdapter() {
+        adapter = RocketAdapter(mutableListOf(), this::goToDetails)
+        homeRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        homeRecycler.adapter = adapter
+    }
+
+    fun updateState(networkState: NetworkState) =
+            when (networkState.status) {
+                Status.RUNNING -> displayProgress()
+                Status.SUCCESS -> hideProgress()
+                Status.FAILED -> displayError(networkState.msg)
+            }
+
+    fun goToDetails(rocketId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun updateRocketList(rockets: MutableList<Rocket>) {
+        adapter?.updateList(rockets)
+    }
+
+    fun displayWelcomeDialog() = container.displayWelcomeDialog(this) { loadData() }
+
+    fun displayProgress() = container.displayProgressDialog(this)
+
+    fun hideProgress() = container.dismissDialog()
+
+    fun displayError(msg: String?) = container.displayErrorDialog(this, msg)
 
     fun getViewModel(spaceXApi: SpaceXApi,
                      prefsHelper: SharedPreferencesHelper): MainActivityViewModel =
