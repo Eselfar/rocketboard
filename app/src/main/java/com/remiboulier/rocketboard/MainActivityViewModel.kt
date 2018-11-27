@@ -6,6 +6,7 @@ import com.remiboulier.rocketboard.model.Rocket
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.getErrorMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,7 +39,7 @@ class MainActivityViewModel(private val spaceXApi: SpaceXApi,
                         },
                         { t ->
                             t.printStackTrace()
-                            networkState.postValue(NetworkState.error(null/*TODO*/))
+                            networkState.postValue(NetworkState.error(getErrorMessage(t)))
                         }))
     }
 

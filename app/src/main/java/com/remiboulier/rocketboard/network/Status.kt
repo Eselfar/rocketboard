@@ -1,5 +1,7 @@
 package com.remiboulier.rocketboard.network
 
+import android.support.annotation.StringRes
+
 enum class Status {
     RUNNING,
     SUCCESS,
@@ -9,12 +11,12 @@ enum class Status {
 @Suppress("DataClassPrivateConstructor")
 data class NetworkState private constructor(
         val status: Status,
-        val msg: String? = null) {
+        @StringRes val msg: Int? = null) {
 
     companion object {
         val LOADED = NetworkState(Status.SUCCESS)
         val LOADING = NetworkState(Status.RUNNING)
 
-        fun error(msg: String?) = NetworkState(Status.FAILED, msg)
+        fun error(msg: Int) = NetworkState(Status.FAILED, msg)
     }
 }

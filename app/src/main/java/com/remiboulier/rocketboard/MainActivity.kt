@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             when (networkState.status) {
                 Status.RUNNING -> displayProgress()
                 Status.SUCCESS -> hideProgress()
-                Status.FAILED -> displayError(networkState.msg)
+                Status.FAILED -> displayError(networkState.msg!!)
             }
 
     fun goToDetails(rocketId: String) {
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     fun hideProgress() = container.dismissDialog()
 
-    fun displayError(msg: String?) = container.displayErrorDialog(this, msg)
+    fun displayError(@StringRes msg: Int) = container.displayErrorDialog(this, msg)
 
     fun getViewModel(spaceXApi: SpaceXApi,
                      prefsHelper: SharedPreferencesHelper): MainActivityViewModel =

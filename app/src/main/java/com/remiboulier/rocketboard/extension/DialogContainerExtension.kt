@@ -1,6 +1,7 @@
 package com.remiboulier.rocketboard.extension
 
 import android.content.Context
+import android.support.annotation.StringRes
 import com.afollestad.materialdialogs.MaterialDialog
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.util.DialogContainer
@@ -30,10 +31,10 @@ fun DialogContainer.displayProgressDialog(context: Context) =
                 .build())
 
 fun DialogContainer.displayErrorDialog(context: Context,
-                                       msg: String?) =
+                                       @StringRes msg: Int) =
         showDialog(MaterialDialog.Builder(context)
                 .title(R.string.app_name)
                 .cancelable(true)
-                .content(msg ?: context.getString(R.string.an_error_occured))
+                .content(context.getString(msg))
                 .positiveText(R.string.got_it)
                 .build())
