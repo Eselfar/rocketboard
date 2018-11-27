@@ -2,4 +2,7 @@
     <string name="app_name">Rocket board</string>
     <string name="country">Country: %1$s</string>
     <string name="number_of_engines">Number of engines: %1$d</string>
+    <string name="please_wait">Please wait</string>
+    <string name="got_it">Got it</string>
+    <string name="an_error_occured">An error occured</string>
 </resources>
