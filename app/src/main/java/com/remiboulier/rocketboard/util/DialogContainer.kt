@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog
  * email: boulier.r.job@gmail.com
  */
 
-class DialogContainer() {
+class DialogContainer {
     private var dialog: MaterialDialog? = null
 
     fun showDialog(md: MaterialDialog) {

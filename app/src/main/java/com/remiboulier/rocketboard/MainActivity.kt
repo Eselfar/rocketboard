@@ -14,6 +14,8 @@ import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.Status
 import com.remiboulier.rocketboard.util.DialogContainer
+import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -29,9 +31,29 @@ class MainActivity : AppCompatActivity() {
 
         initAdapter()
 
-        viewModel = getViewModel((application as CoreApplication).spaceXApi)
+        viewModel = getViewModel(
+                (application as CoreApplication).spaceXApi,
+                SharedPreferencesHelperImpl(applicationContext))
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
+
+        if (viewModel.isFirstTime())
+            displayWelcomeDialog { loadData() }
+        else
+            loadData()
+    }
+
+    private fun displayWelcomeDialog(onPositive: () -> Unit) {
+        container.showDialog(MaterialDialog.Builder(this)
+                .title(R.string.app_name)
+                .content(R.string.welcome_message)
+                .cancelable(false)
+                .positiveText(R.string.got_it)
+                .onPositive { _, _ -> onPositive() }
+                .build())
+    }
+
+    fun loadData() {
         viewModel.loadRockets()
     }
 
@@ -81,15 +103,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        adapter = null;
+        adapter = null
         container.dismissDialog()
     }
 
-    fun getViewModel(spaceXApi: SpaceXApi): MainActivityViewModel =
+    fun getViewModel(spaceXApi: SpaceXApi,
+                     prefsHelper: SharedPreferencesHelper): MainActivityViewModel =
             ViewModelProviders.of(this, object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
-                    return MainActivityViewModel(spaceXApi) as T
+                    return MainActivityViewModel(spaceXApi, prefsHelper) as T
                 }
             })[MainActivityViewModel::class.java]
 }

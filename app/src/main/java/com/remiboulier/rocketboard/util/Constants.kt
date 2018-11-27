@@ -13,3 +13,8 @@ object NetworkConstants {
 object SpaceXApiConstants {
     const val BASE_URL = "https://api.spacexdata.com/v3/"
 }
+
+object SharedPrefs {
+    const val FILE_GLOBAL = "FILE_GLOBAL"
+    const val KEY_IS_FIRST_TIME = "KEY_IS_FIRST_TIME"
+}
