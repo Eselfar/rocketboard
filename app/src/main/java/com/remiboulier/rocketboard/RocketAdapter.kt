@@ -36,6 +36,8 @@ class RocketViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(rocket: Rocket, onClick: (String) -> Unit) = with(view) {
         rocketName.text = rocket.rocketName
+        rocketCountry.text = view.context.getString(R.string.country, rocket.country)
+        rocketEnginesCount.text = view.context.getString(R.string.number_of_engines, rocket.engines.number)
         setOnClickListener { onClick(rocket.rocketId) }
     }
 }

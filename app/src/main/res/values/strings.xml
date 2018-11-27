@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Rocket board</string>
+    <string name="country">Country: %1$s</string>
+    <string name="number_of_engines">Number of engines: %1$d</string>
 </resources>

@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/rocketName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         tools:text="Rocket name" />
 
-</android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/rocketCountry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Country: Country" />
+
+
+    <TextView
+        android:id="@+id/rocketEnginesCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Number of engines: 42" />
+
+</LinearLayout>
