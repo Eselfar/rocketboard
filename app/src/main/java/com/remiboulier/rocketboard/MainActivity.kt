@@ -39,10 +39,16 @@ class MainActivity : AppCompatActivity() {
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
 
+        rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> filterResult(isChecked) }
+
         if (viewModel.isFirstTime())
             displayWelcomeDialog()
         else
             loadData()
+    }
+
+    private fun filterResult(checked: Boolean) {
+        viewModel.filterResults(checked)
     }
 
     override fun onStop() {
@@ -55,8 +61,8 @@ class MainActivity : AppCompatActivity() {
 
     fun initAdapter() {
         adapter = RocketAdapter(mutableListOf(), this::goToDetails)
-        homeRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        homeRecycler.adapter = adapter
+        rocketRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        rocketRecycler.adapter = adapter
     }
 
     fun updateState(networkState: NetworkState) =

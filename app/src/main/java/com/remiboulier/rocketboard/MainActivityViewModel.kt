@@ -17,6 +17,7 @@ class MainActivityViewModel(private val spaceXApi: SpaceXApi,
     val networkState = MutableLiveData<NetworkState>()
 
     private val disposables = CompositeDisposable()
+    private val rockets = mutableListOf<Rocket>()
 
     override fun onCleared() {
         super.onCleared()
@@ -31,7 +32,8 @@ class MainActivityViewModel(private val spaceXApi: SpaceXApi,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res ->
-                            rocketsLiveData.postValue(res)
+                            rockets.addAll(res)
+                            rocketsLiveData.postValue(rockets)
                             networkState.postValue(NetworkState.LOADED)
                         },
                         { t ->
@@ -40,12 +42,12 @@ class MainActivityViewModel(private val spaceXApi: SpaceXApi,
                         }))
     }
 
-    fun isFirstTime(): Boolean {
-        val isFirstTime = prefsHelper.getIsFirstTime()
-        if (isFirstTime) {
-            prefsHelper.storeIsFirstTime(false)
-        }
-
-        return isFirstTime
+    fun isFirstTime(): Boolean = prefsHelper.getIsFirstTime().also {
+        if (it) prefsHelper.storeIsFirstTime(false)
     }
+
+    fun filterResults(checked: Boolean) =
+            rocketsLiveData.postValue(
+                    if (checked) rockets.filter { rocket -> rocket.active }.toMutableList()
+                    else rockets)
 }

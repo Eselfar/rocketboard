@@ -6,4 +6,5 @@
     <string name="got_it">Got it</string>
     <string name="an_error_occured">An error occured</string>
     <string name="welcome_message">Thank you for choosing this app.</string>
+    <string name="active_only">Active only</string>
 </resources>
