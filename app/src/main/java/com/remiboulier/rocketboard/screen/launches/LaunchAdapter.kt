@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.remiboulier.rocketboard.R
+import com.remiboulier.rocketboard.extension.toReadableDate
+import com.remiboulier.rocketboard.extension.toString
 import com.remiboulier.rocketboard.model.Launch
 import kotlinx.android.synthetic.main.item_recycler_launches.view.*
 
@@ -33,8 +35,12 @@ class LaunchAdapter(private val launches: MutableList<Launch>) : RecyclerView.Ad
 class LaunchViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(launch: Launch) = with(view) {
-        launchMissionName.text = launch.missionName
-        launchDate.text = launch.launchDateUtc
-        launchIsSuccess.text = launch.launchSuccess?.toString() ?: context.getString(R.string.unknown)
+        val unknown = context.getString(R.string.unknown)
+        val date = launch.launchDateUnix?.toReadableDate() ?: unknown
+        val success = launch.launchSuccess?.toString(context) ?: unknown
+
+        launchMissionName.text = context.getString(R.string.mission, launch.missionName)
+        launchDate.text = context.getString(R.string.date, date)
+        launchIsSuccess.text = context.getString(R.string.success, success)
     }
 }

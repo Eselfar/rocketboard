@@ -12,7 +12,7 @@ data class Launch(
         @SerializedName("mission_name") val missionName: String? = null,
         @SerializedName("upcoming") val upcoming: Boolean,
         @SerializedName("launch_year") val launchYear: Int? = null,
-        @SerializedName("launch_date_unix") val launchDateUnix: Long? = null,
+        @SerializedName("launch_date_unix") val launchDateUnix: Int? = null,
         @SerializedName("launch_date_utc") val launchDateUtc: String? = null,
         @SerializedName("rocket") val rocket: RocketDetails,
         @SerializedName("launch_success") val launchSuccess: Boolean? = null,

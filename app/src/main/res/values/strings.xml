@@ -9,4 +9,9 @@
     <string name="please_wait">Please wait</string>
     <string name="welcome_message">Thank you for choosing this app.</string>
     <string name="unknown">Unknown</string>
+    <string name="mission">Mission: %1$s</string>
+    <string name="date">Date: %1$s</string>
+    <string name="success">Success: %1$s</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
