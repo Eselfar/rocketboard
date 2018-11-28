@@ -1,9 +1,10 @@
-package com.remiboulier.rocketboard
+package com.remiboulier.rocketboard.screen.home
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.model.Rocket
 import kotlinx.android.synthetic.main.item_recycler_rocket.view.*
 

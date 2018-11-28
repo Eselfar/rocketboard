@@ -1,4 +1,4 @@
-package com.remiboulier.rocketboard
+package com.remiboulier.rocketboard.screen.home
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -11,7 +11,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MainActivityViewModel(private val spaceXApi: SpaceXApi,
+/**
+ * Created by Remi BOULIER on 27/11/2018.
+ * email: boulier.r.job@gmail.com
+ */
+
+class HomeFragmentViewModel(private val spaceXApi: SpaceXApi,
                             private val prefsHelper: SharedPreferencesHelper) : ViewModel() {
 
     val rocketsLiveData = MutableLiveData<MutableList<Rocket>>()
@@ -33,6 +38,7 @@ class MainActivityViewModel(private val spaceXApi: SpaceXApi,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res ->
+                            rockets.clear()
                             rockets.addAll(res)
                             rocketsLiveData.postValue(rockets)
                             networkState.postValue(NetworkState.LOADED)

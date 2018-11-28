@@ -18,3 +18,7 @@ object SharedPrefs {
     const val FILE_GLOBAL = "FILE_GLOBAL"
     const val KEY_IS_FIRST_TIME = "KEY_IS_FIRST_TIME"
 }
+
+object BundleConstants {
+    const val ROCKET_ID = "ROCKET_ID"
+}
