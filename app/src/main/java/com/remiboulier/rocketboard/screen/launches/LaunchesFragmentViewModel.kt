@@ -1,0 +1,52 @@
+package com.remiboulier.rocketboard.screen.launches
+
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
+import com.remiboulier.rocketboard.model.Launch
+import com.remiboulier.rocketboard.network.NetworkState
+import com.remiboulier.rocketboard.network.SpaceXApi
+import com.remiboulier.rocketboard.util.getErrorMessage
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+
+/**
+ * Created by Remi BOULIER on 27/11/2018.
+ * email: boulier.r.job@gmail.com
+ */
+
+class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
+                                private val rocketId: String)
+    : ViewModel() {
+
+    val launchesLiveData = MutableLiveData<MutableList<Launch>>()
+    val networkState = MutableLiveData<NetworkState>()
+
+    private val disposables = CompositeDisposable()
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
+    }
+
+    fun loadLaunches() {
+        networkState.postValue(NetworkState.LOADING)
+
+        disposables.add(spaceXApi.getLaunches()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { res -> Observable.fromIterable(res) }
+                .filter { launch -> launch.rocket.rocketId == rocketId }
+                .toList()
+                .subscribe(
+                        { res ->
+                            launchesLiveData.postValue(res)
+                            networkState.postValue(NetworkState.LOADED)
+                        },
+                        { t ->
+                            t.printStackTrace()
+                            networkState.postValue(NetworkState.error(getErrorMessage(t)))
+                        }))
+    }
+}

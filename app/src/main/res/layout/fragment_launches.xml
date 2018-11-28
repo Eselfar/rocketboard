@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screen.launches.LaunchesFragment">
+
+    <ImageView
+        android:id="@+id/launchesChart"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:src="@mipmap/ic_launcher_round"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/launchesDescription"
+        android:padding="10dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/launchesChart"
+        tools:text="Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sapien lorem, porttitor ut sapien varius, aliquam rutrum lacus. Morbi convallis, augue a lacinia cursus, sapien metus imperdiet elit, sit amet rhoncus massa nulla ut mauris. Vivamus et ultricies purus." />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/launchesRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/launchesDescription"
+        tools:listitem="@layout/item_recycler_launches" />
+
+</android.support.constraint.ConstraintLayout>

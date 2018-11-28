@@ -21,4 +21,5 @@ object SharedPrefs {
 
 object BundleConstants {
     const val ROCKET_ID = "ROCKET_ID"
+    const val ROCKET_DESCRIPTION = "ROCKET_DESCRIPTION"
 }

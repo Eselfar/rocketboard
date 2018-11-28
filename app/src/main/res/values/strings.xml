@@ -8,4 +8,5 @@
     <string name="number_of_engines">Number of engines: %1$d</string>
     <string name="please_wait">Please wait</string>
     <string name="welcome_message">Thank you for choosing this app.</string>
+    <string name="unknown">Unknown</string>
 </resources>

@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,7 +23,7 @@ import com.remiboulier.rocketboard.model.Rocket
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.Status
-import com.remiboulier.rocketboard.screen.details.DetailsFragment
+import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
 import com.remiboulier.rocketboard.util.SharedPreferencesHelper
 import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
@@ -62,10 +61,10 @@ class HomeFragment : Fragment() {
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
 
-        rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> filterResult(isChecked) }
+        rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.filterResults(isChecked) }
 
         if (viewModel.isFirstTime())
-            displayWelcomeDialog()
+            container.displayWelcomeDialog(context!!) { loadData() }
         else
             loadData()
     }
@@ -76,10 +75,6 @@ class HomeFragment : Fragment() {
         container.dismissDialog()
     }
 
-    private fun filterResult(checked: Boolean) {
-        viewModel.filterResults(checked)
-    }
-
     fun loadData() = viewModel.loadRockets()
 
     fun initAdapter() {
@@ -88,28 +83,20 @@ class HomeFragment : Fragment() {
         rocketRecycler.adapter = adapter
     }
 
-    fun updateState(networkState: NetworkState) =
-            when (networkState.status) {
-                Status.RUNNING -> displayProgress()
-                Status.SUCCESS -> hideProgress()
-                Status.FAILED -> displayError(networkState.msg!!)
-            }
-
-    fun goToDetails(rocketId: String) {
-        activityCallback?.goToFragment(DetailsFragment.newInstance(rocketId))
+    fun goToDetails(rocketId: String, description: String) {
+        activityCallback?.goToFragment(LaunchesFragment.newInstance(rocketId, description))
     }
 
     fun updateRocketList(rockets: MutableList<Rocket>) {
         adapter?.updateList(rockets)
     }
 
-    fun displayWelcomeDialog() = container.displayWelcomeDialog(context!!) { loadData() }
-
-    fun displayProgress() = container.displayProgressDialog(context!!)
-
-    fun hideProgress() = container.dismissDialog()
-
-    fun displayError(@StringRes msg: Int) = container.displayErrorDialog(context!!, msg)
+    fun updateState(networkState: NetworkState) =
+            when (networkState.status) {
+                Status.RUNNING -> container.displayProgressDialog(context!!)
+                Status.SUCCESS -> container.dismissDialog()
+                Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
+            }
 
     fun getViewModel(spaceXApi: SpaceXApi,
                      prefsHelper: SharedPreferencesHelper): HomeFragmentViewModel =
