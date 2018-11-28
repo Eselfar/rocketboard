@@ -7,6 +7,8 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -22,7 +24,10 @@ import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.Status
 import com.remiboulier.rocketboard.util.BundleConstants
 import com.remiboulier.rocketboard.util.DialogContainer
+import com.remiboulier.rocketboard.util.GlideApp
+import com.remiboulier.rocketboard.util.GlideRequests
 import kotlinx.android.synthetic.main.fragment_launches.*
+
 
 class LaunchesFragment : Fragment() {
 
@@ -51,8 +56,6 @@ class LaunchesFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        initAdapter()
-
         val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
         val description = arguments?.getString(BundleConstants.ROCKET_DESCRIPTION)
@@ -61,6 +64,8 @@ class LaunchesFragment : Fragment() {
         viewModel = getViewModel((activity!!.application as CoreApplication).spaceXApi, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!, description) })
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
+
+        initAdapter(GlideApp.with(activity!!))
 
         loadData()
     }
@@ -79,8 +84,12 @@ class LaunchesFragment : Fragment() {
 
     fun loadData() = viewModel.loadLaunches()
 
-    fun initAdapter() {
-        adapter = LaunchAdapter(mutableListOf())
+    fun initAdapter(glideRequests: GlideRequests) {
+        adapter = LaunchAdapter(mutableListOf(), glideRequests)
+
+        val itemDecorator = DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
+        itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.decoration_vertical_space)!!)
+        launchesRecycler.addItemDecoration(itemDecorator)
         launchesRecycler.layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
         launchesRecycler.adapter = adapter
     }
@@ -92,7 +101,10 @@ class LaunchesFragment : Fragment() {
                 Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
             }
 
-    fun getViewModel(spaceXApi: SpaceXApi, rocketId: String): LaunchesFragmentViewModel =
+    fun getViewModel(spaceXApi: SpaceXApi,
+                     rocketId: String)
+            : LaunchesFragmentViewModel =
+
             ViewModelProviders.of(this, object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
