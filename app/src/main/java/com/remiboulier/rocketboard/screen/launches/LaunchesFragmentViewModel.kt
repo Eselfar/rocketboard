@@ -2,6 +2,7 @@ package com.remiboulier.rocketboard.screen.launches
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.model.Launch
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
@@ -22,6 +23,7 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
 
     val launchesLiveData = MutableLiveData<MutableList<Launch>>()
     val networkState = MutableLiveData<NetworkState>()
+    val launchesPerYearLiveData = MutableLiveData<List<BarEntry>>()
 
     private val disposables = CompositeDisposable()
 
@@ -42,6 +44,7 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
                 .subscribe(
                         { res ->
                             launchesLiveData.postValue(res)
+                            launchesPerYearLiveData.postValue(generateLaunchesPerYearMap(res))
                             networkState.postValue(NetworkState.LOADED)
                         },
                         { t ->
@@ -49,4 +52,12 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
                             networkState.postValue(NetworkState.error(getErrorMessage(t)))
                         }))
     }
+
+    fun generateLaunchesPerYearMap(launches: MutableList<Launch>): List<BarEntry> =
+            mutableListOf<BarEntry>().apply {
+                val map = launches.groupingBy { it.launchYear }.eachCount()
+                for (entry in map) {
+                    add(BarEntry(entry.key!!.toFloat(), entry.value.toFloat()))
+                }
+            }
 }

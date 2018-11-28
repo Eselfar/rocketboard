@@ -14,4 +14,5 @@
     <string name="success">Success: %1$s</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="number_of_launches">Number of launches</string>
 </resources>

@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".screen.launches.LaunchesFragment">
 
-    <ImageView
+    <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/launchesChart"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

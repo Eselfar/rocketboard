@@ -14,6 +14,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
@@ -63,11 +69,41 @@ class LaunchesFragment : Fragment() {
 
         viewModel = getViewModel((activity!!.application as CoreApplication).spaceXApi, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!, description) })
+        viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
         viewModel.networkState.observe(this, Observer { updateState(it!!) })
 
         initAdapter(GlideApp.with(activity!!))
 
         loadData()
+    }
+
+    private fun updateChart(launchesPerYear: List<BarEntry>) {
+        if (launchesPerYear.isNotEmpty()) {
+            val dataSet = BarDataSet(launchesPerYear, getString(R.string.number_of_launches))
+            dataSet.valueFormatter = IValueFormatter { value, _, _, _ -> value.toInt().toString() }
+
+            val barData = BarData(dataSet)
+            barData.barWidth = 0.9f
+
+            val rightAxis = launchesChart.axisRight
+            rightAxis.isEnabled = false
+
+            val leftAxis = launchesChart.axisLeft
+            leftAxis.setDrawGridLines(true)
+
+            val xAxis = launchesChart.xAxis
+            xAxis.granularity = 1f
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.isGranularityEnabled = true
+            xAxis.valueFormatter = IAxisValueFormatter { value, _ -> value.toInt().toString() }
+            xAxis.setDrawGridLines(false)
+
+            launchesChart.setFitBars(false)
+            launchesChart.data = barData
+            launchesChart.description.text = ""
+        }
+
+        launchesChart.invalidate()
     }
 
     private fun updateUI(launches: MutableList<Launch>,
