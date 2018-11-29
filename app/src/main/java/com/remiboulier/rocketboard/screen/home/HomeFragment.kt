@@ -51,11 +51,9 @@ class HomeFragment : BaseMainFragment() {
         viewModel = getViewModel(
                 (activity!!.application as CoreApplication).spaceXApi,
                 SharedPreferencesHelperImpl(activity!!.applicationContext))
+        viewModel.initActiveOnly(rocketsActiveFilter.isChecked)
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
-        viewModel.networkState.observe(this, Observer {
-            if (rocketsSwipeRefresh.isRefreshing) updateStateWhenRefreshing(it!!)
-            else updateState(it!!)
-        })
+        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
         rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.filterResults(isChecked) }
         rocketsSwipeRefresh.setOnRefreshListener { loadData() }
@@ -64,6 +62,11 @@ class HomeFragment : BaseMainFragment() {
             container.displayWelcomeDialog(context!!) { loadData() }
         else
             loadData()
+    }
+
+    fun onNetworkStateChange(state: NetworkState) {
+        if (rocketsSwipeRefresh.isRefreshing) updateStateWhenRefreshing(state)
+        else updateState(state)
     }
 
     override fun onStop() {
@@ -81,7 +84,7 @@ class HomeFragment : BaseMainFragment() {
     }
 
     fun goToDetails(rocketId: String, rocketName: String, description: String) {
-        activityCallback?.goToFragment(LaunchesFragment.newInstance(rocketId, rocketName, description))
+        activityCallback.goToFragment(LaunchesFragment.newInstance(rocketId, rocketName, description))
     }
 
     fun updateRocketList(rockets: MutableList<Rocket>) {

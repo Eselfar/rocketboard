@@ -29,7 +29,6 @@ import com.remiboulier.rocketboard.util.GlideApp
 import com.remiboulier.rocketboard.util.GlideRequests
 import kotlinx.android.synthetic.main.fragment_launches.*
 
-
 class LaunchesFragment : BaseMainFragment() {
 
     private lateinit var viewModel: LaunchesFragmentViewModel

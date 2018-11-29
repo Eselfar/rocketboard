@@ -13,14 +13,13 @@ import com.remiboulier.rocketboard.MainActivityCallback
 
 abstract class BaseMainFragment : Fragment() {
 
+    lateinit var activityCallback: MainActivityCallback
     lateinit var barTitle: String
-
-    protected var activityCallback: MainActivityCallback? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {
-            activityCallback = activity as MainActivityCallback?
+            activityCallback = activity as MainActivityCallback
         } catch (e: ClassCastException) {
             throw ClassCastException(this.javaClass.simpleName + " must implement MainActivityCallback")
         }
@@ -28,6 +27,6 @@ abstract class BaseMainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activityCallback!!.updateToolbarTitle(barTitle)
+        activityCallback.updateToolbarTitle(barTitle)
     }
 }

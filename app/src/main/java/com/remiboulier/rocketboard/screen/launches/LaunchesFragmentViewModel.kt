@@ -57,7 +57,7 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
             mutableListOf<BarEntry>().apply {
                 val map = launches.groupingBy { it.launchYear }.eachCount()
                 for (entry in map) {
-                    add(BarEntry(entry.key!!.toFloat(), entry.value.toFloat()))
+                    add(BarEntry(entry.key.toFloat(), entry.value.toFloat()))
                 }
             }
 }
