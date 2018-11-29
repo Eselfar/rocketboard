@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/launchesSwipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:measureAllChildren="true"
-    tools:context=".screen.launches.LaunchesFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        tools:context=".screen.launches.LaunchesFragment">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/launchesChart"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/launchesDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            tools:text="Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sapien lorem, porttitor ut sapien varius, aliquam rutrum lacus. Morbi convallis, augue a lacinia cursus, sapien metus imperdiet elit, sit amet rhoncus massa nulla ut mauris. Vivamus et ultricies purus." />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/launchesRecycler"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            tools:listitem="@layout/item_recycler_launches" />
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/launchesChart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/launchesDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                tools:text="Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sapien lorem, porttitor ut sapien varius, aliquam rutrum lacus. Morbi convallis, augue a lacinia cursus, sapien metus imperdiet elit, sit amet rhoncus massa nulla ut mauris. Vivamus et ultricies purus." />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/launchesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                tools:listitem="@layout/item_recycler_launches" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

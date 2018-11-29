@@ -27,7 +27,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
             when (viewType) {
                 HEADER -> HeaderViewHolder(inflateLayout(parent, R.layout.item_recycler_header_date) as TextView)
                 ITEM -> LaunchViewHolder(inflateLayout(parent, R.layout.item_recycler_launches))
-                else -> throw InvalidTypeException()
+                else -> throw InvalidViewTypeException()
             }
 
     override fun getItemViewType(position: Int): Int =
@@ -68,9 +68,9 @@ class LaunchAdapter(private val items: MutableList<Any>,
 
 data class YearHeader(val year: String)
 
-class InvalidItemException : RuntimeException("Item type not supported by this Adapter")
+class InvalidItemException : RuntimeException("Item type not supported")
 
-class InvalidTypeException : RuntimeException("View type not supported by this Adapter")
+class InvalidViewTypeException : RuntimeException("View type not supported")
 
 class HeaderViewHolder(private val view: TextView) : RecyclerView.ViewHolder(view) {
 

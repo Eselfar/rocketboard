@@ -16,15 +16,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rocketRecycler"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/rocketsSwipeRefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rocketsActiveFilter"
-        tools:listitem="@layout/item_recycler_rocket" />
+        app:layout_constraintTop_toBottomOf="@+id/rocketsActiveFilter">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rocketsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_recycler_rocket" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -50,8 +50,8 @@ class HomeFragment : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_home, container, false)
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initAdapter()
 
@@ -59,9 +59,13 @@ class HomeFragment : Fragment() {
                 (activity!!.application as CoreApplication).spaceXApi,
                 SharedPreferencesHelperImpl(activity!!.applicationContext))
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
-        viewModel.networkState.observe(this, Observer { updateState(it!!) })
+        viewModel.networkState.observe(this, Observer {
+            if (rocketsSwipeRefresh.isRefreshing) updateStateWhenRefreshing(it!!)
+            else updateState(it!!)
+        })
 
         rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.filterResults(isChecked) }
+        rocketsSwipeRefresh.setOnRefreshListener { loadData() }
 
         if (viewModel.isFirstTime())
             container.displayWelcomeDialog(context!!) { loadData() }
@@ -79,8 +83,8 @@ class HomeFragment : Fragment() {
 
     fun initAdapter() {
         adapter = RocketAdapter(mutableListOf(), this::goToDetails)
-        rocketRecycler.layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
-        rocketRecycler.adapter = adapter
+        rocketsRecycler.layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
+        rocketsRecycler.adapter = adapter
     }
 
     fun goToDetails(rocketId: String, description: String) {
@@ -89,6 +93,14 @@ class HomeFragment : Fragment() {
 
     fun updateRocketList(rockets: MutableList<Rocket>) {
         adapter?.updateList(rockets)
+    }
+
+    fun updateStateWhenRefreshing(networkState: NetworkState) {
+        if (networkState.status != Status.RUNNING) {
+            rocketsSwipeRefresh.isRefreshing = false
+            if (networkState.status == Status.FAILED)
+                container.displayErrorDialog(context!!, networkState.msg!!)
+        }
     }
 
     fun updateState(networkState: NetworkState) =

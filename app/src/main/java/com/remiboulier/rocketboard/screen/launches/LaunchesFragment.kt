@@ -54,13 +54,11 @@ class LaunchesFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_launches, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_launches, container, false)
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
@@ -70,8 +68,12 @@ class LaunchesFragment : Fragment() {
         viewModel = getViewModel((activity!!.application as CoreApplication).spaceXApi, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!, description) })
         viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
-        viewModel.networkState.observe(this, Observer { updateState(it!!) })
+        viewModel.networkState.observe(this, Observer {
+            if (launchesSwipeRefresh.isRefreshing) updateStateWhenRefreshing(it!!)
+            else updateState(it!!)
+        })
 
+        launchesSwipeRefresh.setOnRefreshListener { loadData() }
         initAdapter(GlideApp.with(activity!!))
 
         loadData()
@@ -128,6 +130,14 @@ class LaunchesFragment : Fragment() {
         launchesRecycler.addItemDecoration(itemDecorator)
         launchesRecycler.layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
         launchesRecycler.adapter = adapter
+    }
+
+    fun updateStateWhenRefreshing(networkState: NetworkState) {
+        if (networkState.status != Status.RUNNING) {
+            launchesSwipeRefresh.isRefreshing = false
+            if (networkState.status == Status.FAILED)
+                container.displayErrorDialog(context!!, networkState.msg!!)
+        }
     }
 
     fun updateState(networkState: NetworkState) =
