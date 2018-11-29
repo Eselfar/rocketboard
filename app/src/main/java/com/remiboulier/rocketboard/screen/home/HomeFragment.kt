@@ -5,16 +5,13 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.remiboulier.rocketboard.CoreApplication
-import com.remiboulier.rocketboard.MainActivityCallback
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayProgressDialog
@@ -23,27 +20,23 @@ import com.remiboulier.rocketboard.model.Rocket
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.Status
+import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
 import com.remiboulier.rocketboard.util.SharedPreferencesHelper
 import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
 import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseMainFragment() {
 
     private lateinit var viewModel: HomeFragmentViewModel
 
     private var adapter: RocketAdapter? = null
-    private var activityCallback: MainActivityCallback? = null
     private var container: DialogContainer = DialogContainer()
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        try {
-            activityCallback = activity as MainActivityCallback?
-        } catch (e: ClassCastException) {
-            throw ClassCastException(this.javaClass.simpleName + " must implement MainActivityCallback")
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        barTitle = getString(R.string.app_name)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +46,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activityCallback!!.updateToolbarTitle(getString(R.string.app_name))
         initAdapter()
 
         viewModel = getViewModel(
