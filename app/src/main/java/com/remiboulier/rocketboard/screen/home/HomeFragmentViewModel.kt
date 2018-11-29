@@ -42,7 +42,7 @@ class HomeFragmentViewModel(private val spaceXApi: SpaceXApi,
                         { res ->
                             rockets.clear()
                             rockets.addAll(res)
-                            filterResults(activeOnly)
+                            rocketsLiveData.postValue(filterResults(rockets, activeOnly))
                             networkState.postValue(NetworkState.LOADED)
                         },
                         { t ->
@@ -55,14 +55,12 @@ class HomeFragmentViewModel(private val spaceXApi: SpaceXApi,
         if (it) prefsHelper.storeIsFirstTime(false)
     }
 
-    fun filterResults(checked: Boolean) {
-        activeOnly = checked
-        rocketsLiveData.postValue(
-                if (checked) rockets.filter { rocket -> rocket.active }.toMutableList()
-                else rockets)
+    fun updateActiveOnly(activeOnly: Boolean) {
+        this.activeOnly = activeOnly
+        rocketsLiveData.postValue(filterResults(rockets, activeOnly))
     }
 
-    fun initActiveOnly(activeOnly: Boolean) {
-        this.activeOnly = activeOnly
-    }
+    fun filterResults(rockets: MutableList<Rocket>, active: Boolean): MutableList<Rocket> =
+            if (active) rockets.filter { rocket -> rocket.active }.toMutableList()
+            else rockets
 }

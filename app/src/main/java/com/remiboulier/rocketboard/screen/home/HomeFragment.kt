@@ -51,11 +51,11 @@ class HomeFragment : BaseMainFragment() {
         viewModel = getViewModel(
                 (activity!!.application as CoreApplication).spaceXApi,
                 SharedPreferencesHelperImpl(activity!!.applicationContext))
-        viewModel.initActiveOnly(rocketsActiveFilter.isChecked)
+        viewModel.updateActiveOnly(rocketsActiveFilter.isChecked)
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
-        rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.filterResults(isChecked) }
+        rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.updateActiveOnly(isChecked) }
         rocketsSwipeRefresh.setOnRefreshListener { loadData() }
 
         if (viewModel.isFirstTime())
