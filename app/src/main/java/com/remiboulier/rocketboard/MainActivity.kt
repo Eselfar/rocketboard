@@ -3,6 +3,7 @@ package com.remiboulier.rocketboard
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.remiboulier.rocketboard.screen.home.HomeFragment
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
@@ -27,5 +28,22 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
                 .replace(R.id.fragment_container, fragment, fragmentName)
                 .addToBackStack(fragmentName)
                 .commit()
+    }
+
+    override fun updateToolbarTitle(newTitle: String) {
+        title = newTitle
+        val enabled = supportFragmentManager.backStackEntryCount > 0
+        supportActionBar?.setDisplayHomeAsUpEnabled(enabled)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                // Respond to the action bar's Up/Home button
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

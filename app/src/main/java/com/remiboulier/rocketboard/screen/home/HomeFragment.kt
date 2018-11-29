@@ -53,6 +53,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activityCallback!!.updateToolbarTitle(getString(R.string.app_name))
         initAdapter()
 
         viewModel = getViewModel(
@@ -87,8 +88,8 @@ class HomeFragment : Fragment() {
         rocketsRecycler.adapter = adapter
     }
 
-    fun goToDetails(rocketId: String, description: String) {
-        activityCallback?.goToFragment(LaunchesFragment.newInstance(rocketId, description))
+    fun goToDetails(rocketId: String, rocketName: String, description: String) {
+        activityCallback?.goToFragment(LaunchesFragment.newInstance(rocketId, rocketName, description))
     }
 
     fun updateRocketList(rockets: MutableList<Rocket>) {

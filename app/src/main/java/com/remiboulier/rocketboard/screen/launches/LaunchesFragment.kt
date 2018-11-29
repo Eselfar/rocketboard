@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.CoreApplication
+import com.remiboulier.rocketboard.MainActivityCallback
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayProgressDialog
@@ -35,16 +37,29 @@ class LaunchesFragment : Fragment() {
     private lateinit var viewModel: LaunchesFragmentViewModel
 
     private var adapter: LaunchAdapter? = null
+    private var activityCallback: MainActivityCallback? = null
     private var container: DialogContainer = DialogContainer()
 
     companion object {
-        fun newInstance(rocketId: String, description: String): LaunchesFragment {
+        fun newInstance(rocketId: String,
+                        rocketName: String,
+                        description: String): LaunchesFragment {
             return LaunchesFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(BundleConstants.ROCKET_ID, rocketId)
+                bundle.putString(BundleConstants.ROCKET_NAME, rocketName)
                 bundle.putString(BundleConstants.ROCKET_DESCRIPTION, description)
                 arguments = bundle
             }
+        }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try {
+            activityCallback = activity as MainActivityCallback?
+        } catch (e: ClassCastException) {
+            throw ClassCastException(this.javaClass.simpleName + " must implement MainActivityCallback")
         }
     }
 
@@ -54,6 +69,9 @@ class LaunchesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        activityCallback!!.updateToolbarTitle(arguments?.getString(BundleConstants.ROCKET_NAME)
+                ?: "")
 
         val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
