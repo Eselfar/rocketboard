@@ -14,12 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
@@ -66,53 +61,23 @@ class LaunchesFragment : Fragment() {
                 ?: throw MissingArgumentException()
 
         viewModel = getViewModel((activity!!.application as CoreApplication).spaceXApi, rocketId)
-        viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!, description) })
+        viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
         viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
-        viewModel.networkState.observe(this, Observer {
-            if (launchesSwipeRefresh.isRefreshing) updateStateWhenRefreshing(it!!)
-            else updateState(it!!)
-        })
+        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
         launchesSwipeRefresh.setOnRefreshListener { loadData() }
-        initAdapter(GlideApp.with(activity!!))
+        initAdapter(description, GlideApp.with(activity!!))
 
         loadData()
     }
 
-    private fun updateChart(launchesPerYear: List<BarEntry>) {
-        if (launchesPerYear.isNotEmpty()) {
-            val dataSet = BarDataSet(launchesPerYear, getString(R.string.number_of_launches))
-            dataSet.valueFormatter = IValueFormatter { value, _, _, _ -> value.toInt().toString() }
-
-            val barData = BarData(dataSet)
-            barData.barWidth = 0.9f
-
-            val rightAxis = launchesChart.axisRight
-            rightAxis.isEnabled = false
-
-            val leftAxis = launchesChart.axisLeft
-            leftAxis.setDrawGridLines(true)
-
-            val xAxis = launchesChart.xAxis
-            xAxis.granularity = 1f
-            xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.isGranularityEnabled = true
-            xAxis.valueFormatter = IAxisValueFormatter { value, _ -> value.toInt().toString() }
-            xAxis.setDrawGridLines(false)
-
-            launchesChart.setFitBars(false)
-            launchesChart.data = barData
-            launchesChart.description.text = ""
-        }
-
-        launchesChart.invalidate()
+    fun onNetworkStateChange(state: NetworkState) {
+        if (launchesSwipeRefresh.isRefreshing) updateStateWhenRefreshing(state)
+        else updateState(state)
     }
 
-    private fun updateUI(launches: MutableList<Launch>,
-                         description: String) {
-        launchesDescription.text = description
-        adapter?.updateList(launches)
-    }
+    fun updateChart(launchesPerYear: List<BarEntry>) = adapter?.updateChart(launchesPerYear)
+    fun updateUI(launches: MutableList<Launch>) = adapter?.updateLaunches(launches)
 
     override fun onStop() {
         super.onStop()
@@ -122,8 +87,9 @@ class LaunchesFragment : Fragment() {
 
     fun loadData() = viewModel.loadLaunches()
 
-    fun initAdapter(glideRequests: GlideRequests) {
-        adapter = LaunchAdapter(mutableListOf(), glideRequests)
+    fun initAdapter(description: String,
+                    glideRequests: GlideRequests) {
+        adapter = LaunchAdapter(mutableListOf(), description, glideRequests)
 
         val itemDecorator = DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.decoration_vertical_space)!!)

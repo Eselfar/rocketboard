@@ -7,33 +7,51 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.toReadableDate
 import com.remiboulier.rocketboard.extension.toString
 import com.remiboulier.rocketboard.model.Launch
 import com.remiboulier.rocketboard.util.GlideRequests
+import kotlinx.android.synthetic.main.item_recycler_chart.view.*
+import kotlinx.android.synthetic.main.item_recycler_description.view.*
 import kotlinx.android.synthetic.main.item_recycler_launches.view.*
 
 class LaunchAdapter(private val items: MutableList<Any>,
+                    private val description: String,
                     private val glide: GlideRequests)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val launches = mutableListOf<Any>()
+    private val chartEntries = mutableListOf<BarEntry>()
+
     companion object {
-        const val HEADER = 0
-        const val ITEM = 1
+        const val CHART = 0
+        const val DESCRIPTION = 1
+        const val HEADER_DATE = 2
+        const val LAUNCH = 3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType) {
-                HEADER -> HeaderViewHolder(inflateLayout(parent, R.layout.item_recycler_header_date) as TextView)
-                ITEM -> LaunchViewHolder(inflateLayout(parent, R.layout.item_recycler_launches))
+                CHART -> ChartViewHolder(inflateLayout(parent, R.layout.item_recycler_chart))
+                DESCRIPTION -> DescriptionViewHolder(inflateLayout(parent, R.layout.item_recycler_description) as TextView)
+                HEADER_DATE -> HeaderDateViewHolder(inflateLayout(parent, R.layout.item_recycler_header_date) as TextView)
+                LAUNCH -> LaunchViewHolder(inflateLayout(parent, R.layout.item_recycler_launches))
                 else -> throw InvalidViewTypeException()
             }
 
     override fun getItemViewType(position: Int): Int =
             when (items[position]) {
-                is YearHeader -> HEADER
-                is Launch -> ITEM
+                is ChartItem -> CHART
+                is DescriptionItem -> DESCRIPTION
+                is YearHeader -> HEADER_DATE
+                is Launch -> LAUNCH
                 else -> throw InvalidItemException()
             }
 
@@ -41,7 +59,9 @@ class LaunchAdapter(private val items: MutableList<Any>,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is HeaderViewHolder -> holder.bind(items[position] as YearHeader)
+            is ChartViewHolder -> holder.bind(chartEntries)
+            is DescriptionViewHolder -> holder.bind(description)
+            is HeaderDateViewHolder -> holder.bind(items[position] as YearHeader)
             is LaunchViewHolder -> holder.bind(items[position] as Launch, glide)
         }
     }
@@ -50,21 +70,41 @@ class LaunchAdapter(private val items: MutableList<Any>,
             LayoutInflater.from(parent.context)
                     .inflate(layout, parent, false)
 
-    fun updateList(newLaunches: MutableList<Launch>) {
+    private fun updateItemList() {
         items.clear()
+        items.add(ChartItem())
+        items.add(DescriptionItem())
+        items.addAll(launches)
+
+        notifyDataSetChanged()
+    }
+
+    fun updateLaunches(newLaunches: MutableList<Launch>) {
+        launches.clear()
         newLaunches.sortedBy { launch -> launch.launchDateUnix }
         var prevYear = 0
         for (launch in newLaunches) {
             if (launch.launchYear > prevYear) {
                 prevYear = launch.launchYear
-                items.add(YearHeader(prevYear.toString()))
+                launches.add(YearHeader(prevYear.toString()))
             }
-            items.add(launch)
+            launches.add(launch)
         }
+
+        updateItemList()
+    }
+
+    fun updateChart(launchesPerYear: List<BarEntry>) {
+        chartEntries.clear()
+        chartEntries.addAll(launchesPerYear)
 
         notifyDataSetChanged()
     }
 }
+
+class ChartItem
+
+class DescriptionItem
 
 data class YearHeader(val year: String)
 
@@ -72,7 +112,46 @@ class InvalidItemException : RuntimeException("Item type not supported")
 
 class InvalidViewTypeException : RuntimeException("View type not supported")
 
-class HeaderViewHolder(private val view: TextView) : RecyclerView.ViewHolder(view) {
+class DescriptionViewHolder(private val view: TextView) : RecyclerView.ViewHolder(view) {
+    fun bind(description: String) {
+        view.launchesDescription.text = description
+    }
+}
+
+class ChartViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+    fun bind(launchesPerYear: List<BarEntry>) = with(view) {
+        if (launchesPerYear.isNotEmpty()) {
+            val dataSet = BarDataSet(launchesPerYear, context.getString(R.string.number_of_launches))
+            dataSet.valueFormatter = IValueFormatter { value, _, _, _ -> value.toInt().toString() }
+
+            val barData = BarData(dataSet)
+            barData.barWidth = 0.9f
+
+            val rightAxis = launchesChart.axisRight
+            rightAxis.isEnabled = false
+
+            val leftAxis = launchesChart.axisLeft
+            leftAxis.setDrawGridLines(true)
+
+            val xAxis = launchesChart.xAxis
+            xAxis.granularity = 1f
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.isGranularityEnabled = true
+            xAxis.valueFormatter = IAxisValueFormatter { value, _ -> value.toInt().toString() }
+            xAxis.setDrawGridLines(false)
+
+            launchesChart.setFitBars(false)
+            launchesChart.data = barData
+            launchesChart.description.text = ""
+        }
+
+        launchesChart.invalidate()
+    }
+}
+
+
+class HeaderDateViewHolder(private val view: TextView) : RecyclerView.ViewHolder(view) {
 
     fun bind(header: YearHeader) {
         view.text = header.year
