@@ -41,6 +41,7 @@ versions.paging = "1.0.1"
 versions.retrofit = '2.4.0'
 versions.rxandroid = '2.1.0'
 versions.rxjava = '2.2.3'
+versions.sticky_headers = '0.5.1'
 versions.support_lib = '28.0.0'
 versions.view_model = '1.1.1'
 
@@ -76,6 +77,9 @@ dependencies {
 
     // Dialog
     implementation "com.afollestad.material-dialogs:core:$versions.material_dialogs"
+
+    // Sticky headers (https://github.com/bgogetap/StickyHeaders)
+    implementation "com.brandongogetap:stickyheaders:$versions.sticky_headers"
 
     testImplementation "junit:junit:$versions.junit"
     testImplementation "org.mockito:mockito-core:$versions.mockito"

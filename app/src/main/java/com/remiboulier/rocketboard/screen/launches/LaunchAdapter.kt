@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.brandongogetap.stickyheaders.exposed.StickyHeader
+import com.brandongogetap.stickyheaders.exposed.StickyHeaderHandler
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -25,7 +27,12 @@ import kotlinx.android.synthetic.main.item_recycler_launches.view.*
 class LaunchAdapter(private val items: MutableList<Any>,
                     private val description: String,
                     private val glide: GlideRequests)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
+
+
+    override fun getAdapterData(): MutableList<*> {
+        return items
+    }
 
     private val launches = mutableListOf<Any>()
     private val chartEntries = mutableListOf<BarEntry>()
@@ -106,7 +113,7 @@ class ChartItem
 
 class DescriptionItem
 
-data class YearHeader(val year: String)
+data class YearHeader(val year: String) : StickyHeader
 
 class InvalidItemException : RuntimeException("Item type not supported")
 

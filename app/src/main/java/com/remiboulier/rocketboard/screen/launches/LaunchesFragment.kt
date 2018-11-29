@@ -9,11 +9,11 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.brandongogetap.stickyheaders.StickyLayoutManager
 import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
@@ -94,7 +94,7 @@ class LaunchesFragment : Fragment() {
         val itemDecorator = DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.decoration_vertical_space)!!)
         launchesRecycler.addItemDecoration(itemDecorator)
-        launchesRecycler.layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
+        launchesRecycler.layoutManager = StickyLayoutManager(context!!, RecyclerView.VERTICAL, false, adapter)
         launchesRecycler.adapter = adapter
     }
 

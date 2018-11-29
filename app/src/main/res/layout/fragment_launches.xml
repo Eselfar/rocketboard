@@ -6,9 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".screen.launches.LaunchesFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/launchesRecycler"
+    <!-- Required for the sticky header -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_recycler_launches" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/launchesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_recycler_launches" />
+    </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
