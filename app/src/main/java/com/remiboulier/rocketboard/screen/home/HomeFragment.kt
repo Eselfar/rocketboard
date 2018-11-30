@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -34,6 +35,20 @@ class HomeFragment : BaseMainFragment() {
     private var adapter: RocketAdapter? = null
     private var container: DialogContainer = DialogContainer()
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val rocketRepo = RocketRepository(
+                (activity!!.application as CoreApplication).spaceXApi,
+                (activity!!.application as CoreApplication).spaceXDB.rocketDao())
+
+        viewModel = getViewModel(
+                rocketRepo,
+                SharedPreferencesHelperImpl(activity!!.applicationContext))
+
+        viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
+        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         barTitle = getString(R.string.app_name)
@@ -47,17 +62,6 @@ class HomeFragment : BaseMainFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initAdapter()
-
-        val rocketRepo = RocketRepository(
-                (activity!!.application as CoreApplication).spaceXApi,
-                (activity!!.application as CoreApplication).spaceXDB.rocketDao())
-
-        viewModel = getViewModel(
-                rocketRepo,
-                SharedPreferencesHelperImpl(activity!!.applicationContext))
-        viewModel.updateActiveOnly(rocketsActiveFilter.isChecked)
-        viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
-        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
         rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.updateActiveOnly(isChecked) }
         rocketsSwipeRefresh.setOnRefreshListener { loadData(true) }

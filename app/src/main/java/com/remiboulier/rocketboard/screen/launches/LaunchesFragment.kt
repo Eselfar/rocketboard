@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -50,6 +51,21 @@ class LaunchesFragment : BaseMainFragment() {
         }
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
+                ?: throw MissingArgumentException()
+        val launchRepo = LaunchRepository(
+                (activity!!.application as CoreApplication).spaceXApi,
+                (activity!!.application as CoreApplication).spaceXDB.launchDao())
+
+        viewModel = getViewModel(launchRepo, rocketId)
+        viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
+        viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
+        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         barTitle = arguments?.getString(BundleConstants.ROCKET_NAME)
@@ -63,19 +79,8 @@ class LaunchesFragment : BaseMainFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
-                ?: throw MissingArgumentException()
         val description = arguments?.getString(BundleConstants.ROCKET_DESCRIPTION)
                 ?: throw MissingArgumentException()
-
-        val launchRepo = LaunchRepository(
-                (activity!!.application as CoreApplication).spaceXApi,
-                (activity!!.application as CoreApplication).spaceXDB.launchDao())
-
-        viewModel = getViewModel(launchRepo, rocketId)
-        viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
-        viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
-        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
         launchesSwipeRefresh.setOnRefreshListener { loadData(true) }
         initAdapter(description, GlideApp.with(activity!!))
