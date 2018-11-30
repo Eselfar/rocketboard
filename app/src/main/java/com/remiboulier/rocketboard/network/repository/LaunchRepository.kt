@@ -3,10 +3,10 @@ package com.remiboulier.rocketboard.network.repository
 import android.arch.lifecycle.MutableLiveData
 import com.remiboulier.rocketboard.mapper.LaunchDtoToEntity
 import com.remiboulier.rocketboard.network.SpaceXApi
+import com.remiboulier.rocketboard.network.dto.LaunchDto
 import com.remiboulier.rocketboard.room.dao.LaunchDao
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.util.getErrorMessage
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -40,17 +40,8 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res ->
-                            if (res.isNotEmpty()) {
-                                callback(res)
-                                networkState.postValue(NetworkState.LOADED)
-                            } else
-                                getLaunchesFromAPI(rocketId, callback)
-                        },
-                        { t ->
-                            t.printStackTrace()
-                            networkState.postValue(NetworkState.error(getErrorMessage(t)))
-                        }))
+                        { res -> onGetFromDBSuccess(rocketId, res, callback) },
+                        { t -> onError(t) }))
     }
 
     fun getLaunchesFromAPI(rocketId: String,
@@ -59,20 +50,37 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
         disposables.add(spaceXApi.getLaunches()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { res -> Observable.fromIterable(res) }
-                .filter { launch -> launch.rocket.rocketId == rocketId }
-                .toList()
                 .subscribe(
-                        { res ->
-                            val mapper = Mappers.getMapper(LaunchDtoToEntity::class.java)
-                            val launches = res.map(mapper::map)
-                            launchDao.saveAll(launches)
-                            callback(launches)
-                            networkState.postValue(NetworkState.LOADED)
-                        },
-                        { t ->
-                            t.printStackTrace()
-                            networkState.postValue(NetworkState.error(getErrorMessage(t)))
-                        }))
+                        { res -> onGetFromAPISuccess(rocketId, res, callback) },
+                        { t -> onError(t) }))
+    }
+
+    fun onGetFromDBSuccess(rocketId: String,
+                           entities: List<LaunchEntity>,
+                           callback: (launches: List<LaunchEntity>) -> Unit) {
+        if (entities.isNotEmpty()) {
+            callback(entities)
+            networkState.postValue(NetworkState.LOADED)
+        } else
+            getLaunchesFromAPI(rocketId, callback)
+    }
+
+    fun onGetFromAPISuccess(rocketId: String,
+                            dtos: List<LaunchDto>,
+                            callback: (launches: List<LaunchEntity>) -> Unit) {
+        val mapper = Mappers.getMapper(LaunchDtoToEntity::class.java)
+        val launches = filterAPIResult(rocketId, dtos).map(mapper::map)
+        launchDao.saveAll(launches)
+        callback(launches)
+        networkState.postValue(NetworkState.LOADED)
+    }
+
+    fun filterAPIResult(rocketId: String,
+                        dtos: List<LaunchDto>): List<LaunchDto> =
+            dtos.filter { launch -> launch.rocket.rocketId == rocketId }
+
+    fun onError(t: Throwable) {
+        t.printStackTrace()
+        networkState.postValue(NetworkState.error(getErrorMessage(t)))
     }
 }
