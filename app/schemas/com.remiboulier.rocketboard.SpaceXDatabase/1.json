@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b230ad496dbd263c2c9793d1249f5205",
+    "identityHash": "f4d6e8cb84c30d132d5ee8f0f012b383",
     "entities": [
       {
         "tableName": "rocket",
@@ -62,17 +62,11 @@
       },
       {
         "tableName": "launch",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` INTEGER NOT NULL, `flight_number` INTEGER NOT NULL, `mission_name` TEXT, `upcoming` INTEGER NOT NULL, `launch_year` INTEGER NOT NULL, `launch_date_unix` INTEGER, `launch_date_utc` TEXT, `launch_success` INTEGER, `rocket_id` TEXT NOT NULL, `rocket_name` TEXT NOT NULL, `mission_patch` TEXT, `mission_patch_small` TEXT, PRIMARY KEY(`flightId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightNumber` INTEGER NOT NULL, `mission_name` TEXT, `upcoming` INTEGER NOT NULL, `launch_year` INTEGER NOT NULL, `launch_date_unix` INTEGER, `launch_date_utc` TEXT, `launch_success` INTEGER, `rocket_id` TEXT NOT NULL, `rocket_name` TEXT NOT NULL, `mission_patch` TEXT, `mission_patch_small` TEXT, PRIMARY KEY(`flightNumber`))",
         "fields": [
           {
-            "fieldPath": "flightId",
-            "columnName": "flightId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "flightNumber",
-            "columnName": "flight_number",
+            "columnName": "flightNumber",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -139,7 +133,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "flightId"
+            "flightNumber"
           ],
           "autoGenerate": false
         },
@@ -149,7 +143,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b230ad496dbd263c2c9793d1249f5205\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f4d6e8cb84c30d132d5ee8f0f012b383\")"
     ]
   }
 }

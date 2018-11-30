@@ -12,8 +12,7 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "launch")
 data class LaunchEntity(
-        @PrimaryKey(autoGenerate = false) var flightId: Int,
-        @ColumnInfo(name = "flight_number") var flightNumber: Int,
+        @PrimaryKey(autoGenerate = false) var flightNumber: Int,
         @ColumnInfo(name = "mission_name") var missionName: String? = null,
         @ColumnInfo(name = "upcoming") var upcoming: Boolean,
         @ColumnInfo(name = "launch_year") var launchYear: Int,
@@ -30,7 +29,6 @@ data class LaunchEntity(
     // Necessary for MapStruct
     @Ignore
     constructor() : this(
-            0,
             0,
             null,
             false,

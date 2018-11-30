@@ -16,7 +16,7 @@ import io.reactivex.Single
 interface LaunchDao {
 
     @Query("SELECT * FROM launch WHERE rocket_id LIKE :rocketId")
-    fun getAllAsync(rocketId: String): Single<List<LaunchEntity>>
+    fun getAllForRocketIdAsync(rocketId: String): Single<List<LaunchEntity>>
 
     @Insert(onConflict = REPLACE)
     fun saveAll(launches: List<LaunchEntity>)
