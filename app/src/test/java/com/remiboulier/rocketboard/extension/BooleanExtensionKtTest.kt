@@ -22,9 +22,9 @@ class BooleanExtensionKtTest {
     @Test
     fun toString_returns_yes() {
         `when`(context.getString(R.string.yes)).thenReturn("Yes")
-        val expected = true.toString(context)
+        val res = true.toString(context)
 
-        Assert.assertEquals("Yes", expected)
+        Assert.assertEquals("Yes", res)
     }
 
     @Test

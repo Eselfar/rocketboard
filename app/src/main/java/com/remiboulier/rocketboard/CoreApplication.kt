@@ -27,7 +27,6 @@ class CoreApplication : Application() {
         spaceXDB = Room.databaseBuilder(
                 applicationContext,
                 SpaceXDatabase::class.java, "SpaceX_Database")
-                .allowMainThreadQueries()
                 .build()
     }
 }

@@ -11,8 +11,8 @@ import com.remiboulier.rocketboard.util.SharedPreferencesHelper
  * email: boulier.r.job@gmail.com
  */
 
-class HomeFragmentViewModel(private val rocketRepo: RocketRepository,
-                            private val prefsHelper: SharedPreferencesHelper) : ViewModel() {
+open class HomeFragmentViewModel(private val rocketRepo: RocketRepository,
+                                 private val prefsHelper: SharedPreferencesHelper) : ViewModel() {
 
     val rocketsLiveData = MutableLiveData<List<RocketEntity>>()
     val networkState = rocketRepo.networkState
@@ -38,8 +38,10 @@ class HomeFragmentViewModel(private val rocketRepo: RocketRepository,
     }
 
     fun updateActiveOnly(activeOnly: Boolean) {
-        this.activeOnly = activeOnly
-        rocketsLiveData.postValue(filterResults(rockets, activeOnly))
+        if (activeOnly != this.activeOnly) {
+            this.activeOnly = activeOnly
+            rocketsLiveData.postValue(filterResults(rockets, activeOnly))
+        }
     }
 
     fun filterResults(rockets: List<RocketEntity>, active: Boolean): List<RocketEntity> =

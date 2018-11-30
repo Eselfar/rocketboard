@@ -61,7 +61,7 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
 
         repo.getLaunchesFromAPI("", {})
 
-        verify(repo, times(1)).onError(any(Throwable::class.java))
+        verify(repo, times(1)).onRxError(any(Throwable::class.java))
     }
 
     @Test
@@ -80,35 +80,10 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
         assert(group.size == 1 && group[rocketId] == 2)
     }
 
-    fun initLaunchDtoForTest(rocketId: String): LaunchDto {
+    private fun initLaunchDtoForTest(rocketId: String): LaunchDto {
         return LaunchDto(0, null, false, 0,
                 null, null,
                 RocketDetailsDto(rocketId, ""),
                 null, mock(LinksDto::class.java))
     }
-
-
-//    @Mock
-//    lateinit var observer: Observer<NetworkState>
-//
-//    @Test
-//    fun getLaunchesFromAPI_update_NetworkState() {
-//        val launches = MutableList(3) { mock(LaunchDto::class.java) }
-//        Mockito.`when`(spaceXApi.getLaunches())
-//                .thenReturn(Observable.just(launches))
-//        val repo = LaunchRepository(spaceXApi, launchDao)
-////        val state = spy(repo.networkState)
-////        state.observe(mock(LifecycleOwner::class.java), Observer { })
-//        repo.networkState.observeForever(observer)
-//
-//
-//        doNothing().`when`(repo).onGetFromAPISuccess(anyString(), anyList(), any())
-//
-//        repo.getLaunchesFromAPI("", {})
-//
-//        assertNotNull(repo.networkState.value)
-//        assert(repo.networkState.value?.status == Status.RUNNING)
-////        verify(state, times(1)).postValue(any())
-////        assertNull(repo.networkState.value)
-//    }
 }

@@ -58,6 +58,6 @@ class LaunchRepositoryTestGetLaunchesFromDB : RxJavaTestSetup() {
 
         repo.getLaunchesFromDB("", {})
 
-        verify(repo, times(1)).onError(any(Throwable::class.java))
+        verify(repo, times(1)).onRxError(any(Throwable::class.java))
     }
 }
