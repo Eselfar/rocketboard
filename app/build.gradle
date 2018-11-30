@@ -33,6 +33,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 def versions = [:]
@@ -44,6 +47,7 @@ versions.junit = '4.12'
 versions.okhttp = '3.11.0'
 versions.mapstruct = '1.2.0.Final'
 versions.mockito = '2.23.0'
+versions.mockito_kotlin = '2.0.0'
 versions.mpandroid_chart = 'v3.0.3'
 versions.paging = "1.0.1"
 versions.retrofit = '2.4.0'
@@ -105,6 +109,7 @@ dependencies {
     testImplementation "junit:junit:$versions.junit"
     testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "android.arch.core:core-testing:$versions.core_testing"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

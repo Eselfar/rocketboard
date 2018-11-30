@@ -53,8 +53,8 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
                         }))
     }
 
-    private fun getLaunchesFromAPI(rocketId: String,
-                                   callback: (launches: List<LaunchEntity>) -> Unit) {
+    fun getLaunchesFromAPI(rocketId: String,
+                           callback: (launches: List<LaunchEntity>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         disposables.add(spaceXApi.getLaunches()
                 .subscribeOn(Schedulers.io())

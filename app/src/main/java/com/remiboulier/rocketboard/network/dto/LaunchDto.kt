@@ -8,7 +8,6 @@ package com.remiboulier.rocketboard.network.dto
 import com.google.gson.annotations.SerializedName
 
 data class LaunchDto(
-        @SerializedName("flight_id") val flightId: Int,
         @SerializedName("flight_number") val flightNumber: Int,
         @SerializedName("mission_name") val missionName: String? = null,
         @SerializedName("upcoming") val upcoming: Boolean,
