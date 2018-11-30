@@ -19,11 +19,5 @@ interface RocketDao {
     fun saveAll(rockets: List<RocketEntity>)
 
     @Query("SELECT * FROM rocket")
-    fun getAll(): List<RocketEntity>
-
-    @Query("SELECT * FROM rocket")
     fun getAllAsync(): Single<List<RocketEntity>>
-
-    @Query("SELECT COUNT(*) FROM rocket")
-    fun countRockets(): Int
 }

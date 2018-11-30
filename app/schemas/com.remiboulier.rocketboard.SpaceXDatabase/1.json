@@ -1,0 +1,155 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b230ad496dbd263c2c9793d1249f5205",
+    "entities": [
+      {
+        "tableName": "rocket",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `active` INTEGER NOT NULL, `country` TEXT NOT NULL, `description` TEXT NOT NULL, `rocket_id` TEXT NOT NULL, `rocket_name` TEXT NOT NULL, `number_of_engine` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rocketId",
+            "columnName": "rocket_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rocketName",
+            "columnName": "rocket_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfEngines",
+            "columnName": "number_of_engine",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "launch",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` INTEGER NOT NULL, `flight_number` INTEGER NOT NULL, `mission_name` TEXT, `upcoming` INTEGER NOT NULL, `launch_year` INTEGER NOT NULL, `launch_date_unix` INTEGER, `launch_date_utc` TEXT, `launch_success` INTEGER, `rocket_id` TEXT NOT NULL, `rocket_name` TEXT NOT NULL, `mission_patch` TEXT, `mission_patch_small` TEXT, PRIMARY KEY(`flightId`))",
+        "fields": [
+          {
+            "fieldPath": "flightId",
+            "columnName": "flightId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flightNumber",
+            "columnName": "flight_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "missionName",
+            "columnName": "mission_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "upcoming",
+            "columnName": "upcoming",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "launchYear",
+            "columnName": "launch_year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "launchDateUnix",
+            "columnName": "launch_date_unix",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "launchDateUtc",
+            "columnName": "launch_date_utc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "launchSuccess",
+            "columnName": "launch_success",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rocketId",
+            "columnName": "rocket_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rocketName",
+            "columnName": "rocket_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "missionPatch",
+            "columnName": "mission_patch",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "missionPatchSmall",
+            "columnName": "mission_patch_small",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "flightId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b230ad496dbd263c2c9793d1249f5205\")"
+    ]
+  }
+}

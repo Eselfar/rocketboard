@@ -2,6 +2,7 @@ package com.remiboulier.rocketboard.room.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 
 /**
@@ -19,6 +20,7 @@ data class RocketEntity(
         @ColumnInfo(name = "number_of_engine") var numberOfEngines: Int) {
 
     // Necessary for MapStruct
+    @Ignore
     constructor() : this(
             0,
             false,

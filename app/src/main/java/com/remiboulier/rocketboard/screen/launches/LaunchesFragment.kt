@@ -18,10 +18,10 @@ import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayProgressDialog
-import com.remiboulier.rocketboard.network.SpaceXApi
-import com.remiboulier.rocketboard.network.dto.LaunchDto
+import com.remiboulier.rocketboard.network.repository.LaunchRepository
 import com.remiboulier.rocketboard.network.repository.NetworkState
 import com.remiboulier.rocketboard.network.repository.Status
+import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.util.BundleConstants
 import com.remiboulier.rocketboard.util.DialogContainer
@@ -68,12 +68,16 @@ class LaunchesFragment : BaseMainFragment() {
         val description = arguments?.getString(BundleConstants.ROCKET_DESCRIPTION)
                 ?: throw MissingArgumentException()
 
-        viewModel = getViewModel((activity!!.application as CoreApplication).spaceXApi, rocketId)
+        val launchRepo = LaunchRepository(
+                (activity!!.application as CoreApplication).spaceXApi,
+                (activity!!.application as CoreApplication).spaceXDB.launchDao())
+
+        viewModel = getViewModel(launchRepo, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
         viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
-        launchesSwipeRefresh.setOnRefreshListener { loadData() }
+        launchesSwipeRefresh.setOnRefreshListener { loadData(true) }
         initAdapter(description, GlideApp.with(activity!!))
 
         loadData()
@@ -85,7 +89,7 @@ class LaunchesFragment : BaseMainFragment() {
     }
 
     fun updateChart(launchesPerYear: List<BarEntry>) = adapter?.updateChart(launchesPerYear)
-    fun updateUI(launches: MutableList<LaunchDto>) = adapter?.updateLaunches(launches)
+    fun updateUI(launches: List<LaunchEntity>) = adapter?.updateLaunches(launches)
 
     override fun onStop() {
         super.onStop()
@@ -93,7 +97,7 @@ class LaunchesFragment : BaseMainFragment() {
         container.dismissDialog()
     }
 
-    fun loadData() = viewModel.loadLaunches()
+    fun loadData(forceRefresh: Boolean = false) = viewModel.loadLaunches(forceRefresh)
 
     fun initAdapter(description: String,
                     glideRequests: GlideRequests) {
@@ -121,14 +125,14 @@ class LaunchesFragment : BaseMainFragment() {
                 Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
             }
 
-    fun getViewModel(spaceXApi: SpaceXApi,
+    fun getViewModel(launchRepo: LaunchRepository,
                      rocketId: String)
             : LaunchesFragmentViewModel =
 
             ViewModelProviders.of(this, object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
-                    return LaunchesFragmentViewModel(spaceXApi, rocketId) as T
+                    return LaunchesFragmentViewModel(launchRepo, rocketId) as T
                 }
             })[LaunchesFragmentViewModel::class.java]
 }

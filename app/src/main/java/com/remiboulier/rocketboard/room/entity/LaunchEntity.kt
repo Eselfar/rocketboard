@@ -2,8 +2,8 @@ package com.remiboulier.rocketboard.room.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 /**
  * Created by Remi BOULIER on 29/11/2018.
@@ -21,13 +21,14 @@ data class LaunchEntity(
         @ColumnInfo(name = "launch_date_utc") var launchDateUtc: String? = null,
         @ColumnInfo(name = "launch_success") var launchSuccess: Boolean? = null,
 
-        @SerializedName("rocket_id") var rocketId: String,
-        @SerializedName("rocket_name") var rocketName: String,
+        @ColumnInfo(name = "rocket_id") var rocketId: String,
+        @ColumnInfo(name = "rocket_name") var rocketName: String,
 
-        @SerializedName("mission_patch") var missionPatch: String? = null,
-        @SerializedName("mission_patch_small") var missionPatchSmall: String? = null) {
+        @ColumnInfo(name = "mission_patch") var missionPatch: String? = null,
+        @ColumnInfo(name = "mission_patch_small") var missionPatchSmall: String? = null) {
 
     // Necessary for MapStruct
+    @Ignore
     constructor() : this(
             0,
             0,

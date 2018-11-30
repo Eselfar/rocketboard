@@ -18,7 +18,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.toReadableDate
 import com.remiboulier.rocketboard.extension.toString
-import com.remiboulier.rocketboard.network.dto.LaunchDto
+import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.util.GlideRequests
 import kotlinx.android.synthetic.main.item_recycler_chart.view.*
 import kotlinx.android.synthetic.main.item_recycler_description.view.*
@@ -58,7 +58,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
                 is ChartItem -> CHART
                 is DescriptionItem -> DESCRIPTION
                 is YearHeader -> HEADER_DATE
-                is LaunchDto -> LAUNCH
+                is LaunchEntity -> LAUNCH
                 else -> throw InvalidItemException()
             }
 
@@ -69,7 +69,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
             is ChartViewHolder -> holder.bind(chartEntries)
             is DescriptionViewHolder -> holder.bind(description)
             is HeaderDateViewHolder -> holder.bind(items[position] as YearHeader)
-            is LaunchViewHolder -> holder.bind(items[position] as LaunchDto, glide)
+            is LaunchViewHolder -> holder.bind(items[position] as LaunchEntity, glide)
         }
     }
 
@@ -86,7 +86,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
         notifyDataSetChanged()
     }
 
-    fun updateLaunches(newLaunches: MutableList<LaunchDto>) {
+    fun updateLaunches(newLaunches: List<LaunchEntity>) {
         launches.clear()
         newLaunches.sortedBy { launch -> launch.launchDateUnix }
         var prevYear = 0
@@ -167,7 +167,7 @@ class HeaderDateViewHolder(private val view: TextView) : RecyclerView.ViewHolder
 
 class LaunchViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(launch: LaunchDto,
+    fun bind(launch: LaunchEntity,
              glide: GlideRequests) = with(view) {
         val unknown = context.getString(R.string.unknown)
         val date = launch.launchDateUnix?.toReadableDate() ?: unknown
@@ -177,8 +177,8 @@ class LaunchViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         launchDate.text = context.getString(R.string.date, date)
         launchIsSuccess.text = context.getString(R.string.success, success)
 
-        if (launch.links.missionPatchSmall?.isBlank() == false)
-            displayImage(launchImage, launch.links.missionPatchSmall, glide)
+        if (launch.missionPatchSmall?.isNotBlank() == true)
+            displayImage(launchImage, launch.missionPatchSmall!!, glide)
     }
 
     private fun displayImage(target: ImageView, image: String, glide: GlideRequests) {
