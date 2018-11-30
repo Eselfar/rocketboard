@@ -16,10 +16,10 @@ import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayProgressDialog
 import com.remiboulier.rocketboard.extension.displayWelcomeDialog
-import com.remiboulier.rocketboard.model.Rocket
-import com.remiboulier.rocketboard.network.NetworkState
-import com.remiboulier.rocketboard.network.SpaceXApi
-import com.remiboulier.rocketboard.network.Status
+import com.remiboulier.rocketboard.network.repository.NetworkState
+import com.remiboulier.rocketboard.network.repository.RocketRepository
+import com.remiboulier.rocketboard.network.repository.Status
+import com.remiboulier.rocketboard.room.entity.RocketEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
@@ -48,15 +48,19 @@ class HomeFragment : BaseMainFragment() {
 
         initAdapter()
 
-        viewModel = getViewModel(
+        val rocketRepo = RocketRepository(
                 (activity!!.application as CoreApplication).spaceXApi,
+                (activity!!.application as CoreApplication).spaceXDB.rocketDao())
+
+        viewModel = getViewModel(
+                rocketRepo,
                 SharedPreferencesHelperImpl(activity!!.applicationContext))
         viewModel.updateActiveOnly(rocketsActiveFilter.isChecked)
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
 
         rocketsActiveFilter.setOnCheckedChangeListener { _, isChecked -> viewModel.updateActiveOnly(isChecked) }
-        rocketsSwipeRefresh.setOnRefreshListener { loadData() }
+        rocketsSwipeRefresh.setOnRefreshListener { loadData(true) }
 
         if (viewModel.isFirstTime())
             container.displayWelcomeDialog(context!!) { loadData() }
@@ -75,7 +79,7 @@ class HomeFragment : BaseMainFragment() {
         container.dismissDialog()
     }
 
-    fun loadData() = viewModel.loadRockets()
+    fun loadData(forceRefresh: Boolean = false) = viewModel.loadRockets(forceRefresh)
 
     fun initAdapter() {
         adapter = RocketAdapter(mutableListOf(), this::goToDetails)
@@ -87,7 +91,7 @@ class HomeFragment : BaseMainFragment() {
         activityCallback.goToFragment(LaunchesFragment.newInstance(rocketId, rocketName, description))
     }
 
-    fun updateRocketList(rockets: MutableList<Rocket>) {
+    fun updateRocketList(rockets: List<RocketEntity>) {
         adapter?.updateList(rockets)
     }
 
@@ -106,12 +110,12 @@ class HomeFragment : BaseMainFragment() {
                 Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
             }
 
-    fun getViewModel(spaceXApi: SpaceXApi,
+    fun getViewModel(rocketRepo: RocketRepository,
                      prefsHelper: SharedPreferencesHelper): HomeFragmentViewModel =
             ViewModelProviders.of(this, object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
-                    return HomeFragmentViewModel(spaceXApi, prefsHelper) as T
+                    return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
                 }
             })[HomeFragmentViewModel::class.java]
 }

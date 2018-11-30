@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.remiboulier.rocketboard.R
-import com.remiboulier.rocketboard.model.Rocket
+import com.remiboulier.rocketboard.room.entity.RocketEntity
 import kotlinx.android.synthetic.main.item_recycler_rocket.view.*
 
 class RocketAdapter(
-        private val rockets: MutableList<Rocket>,
+        private val rockets: MutableList<RocketEntity>,
         private val onClick: (String, String, String) -> Unit)
     : RecyclerView.Adapter<RocketViewHolder>() {
 
@@ -26,7 +26,7 @@ class RocketAdapter(
         holder.bind(rockets[position], onClick)
     }
 
-    fun updateList(newRockets: MutableList<Rocket>) {
+    fun updateList(newRockets: List<RocketEntity>) {
         rockets.clear()
         rockets.addAll(newRockets)
         notifyDataSetChanged()
@@ -35,10 +35,10 @@ class RocketAdapter(
 
 class RocketViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(rocket: Rocket, onClick: (String, String, String) -> Unit) = with(view) {
+    fun bind(rocket: RocketEntity, onClick: (String, String, String) -> Unit) = with(view) {
         rocketName.text = rocket.rocketName
         rocketCountry.text = view.context.getString(R.string.country, rocket.country)
-        rocketEnginesCount.text = view.context.getString(R.string.number_of_engines, rocket.engines.number)
+        rocketEnginesCount.text = view.context.getString(R.string.number_of_engines, rocket.numberOfEngines)
         setOnClickListener { onClick(rocket.rocketId, rocket.rocketName, rocket.description) }
     }
 }

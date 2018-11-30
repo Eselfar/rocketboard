@@ -18,7 +18,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.toReadableDate
 import com.remiboulier.rocketboard.extension.toString
-import com.remiboulier.rocketboard.model.Launch
+import com.remiboulier.rocketboard.network.dto.LaunchDto
 import com.remiboulier.rocketboard.util.GlideRequests
 import kotlinx.android.synthetic.main.item_recycler_chart.view.*
 import kotlinx.android.synthetic.main.item_recycler_description.view.*
@@ -58,7 +58,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
                 is ChartItem -> CHART
                 is DescriptionItem -> DESCRIPTION
                 is YearHeader -> HEADER_DATE
-                is Launch -> LAUNCH
+                is LaunchDto -> LAUNCH
                 else -> throw InvalidItemException()
             }
 
@@ -69,13 +69,13 @@ class LaunchAdapter(private val items: MutableList<Any>,
             is ChartViewHolder -> holder.bind(chartEntries)
             is DescriptionViewHolder -> holder.bind(description)
             is HeaderDateViewHolder -> holder.bind(items[position] as YearHeader)
-            is LaunchViewHolder -> holder.bind(items[position] as Launch, glide)
+            is LaunchViewHolder -> holder.bind(items[position] as LaunchDto, glide)
         }
     }
 
     fun inflateLayout(parent: ViewGroup, @LayoutRes layout: Int) =
             LayoutInflater.from(parent.context)
-                    .inflate(layout, parent, false)
+                    .inflate(layout, parent, false)!!
 
     private fun updateItemList() {
         items.clear()
@@ -86,7 +86,7 @@ class LaunchAdapter(private val items: MutableList<Any>,
         notifyDataSetChanged()
     }
 
-    fun updateLaunches(newLaunches: MutableList<Launch>) {
+    fun updateLaunches(newLaunches: MutableList<LaunchDto>) {
         launches.clear()
         newLaunches.sortedBy { launch -> launch.launchDateUnix }
         var prevYear = 0
@@ -167,7 +167,7 @@ class HeaderDateViewHolder(private val view: TextView) : RecyclerView.ViewHolder
 
 class LaunchViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(launch: Launch,
+    fun bind(launch: LaunchDto,
              glide: GlideRequests) = with(view) {
         val unknown = context.getString(R.string.unknown)
         val date = launch.launchDateUnix?.toReadableDate() ?: unknown

@@ -18,10 +18,10 @@ import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayProgressDialog
-import com.remiboulier.rocketboard.model.Launch
-import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
-import com.remiboulier.rocketboard.network.Status
+import com.remiboulier.rocketboard.network.dto.LaunchDto
+import com.remiboulier.rocketboard.network.repository.NetworkState
+import com.remiboulier.rocketboard.network.repository.Status
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.util.BundleConstants
 import com.remiboulier.rocketboard.util.DialogContainer
@@ -85,7 +85,7 @@ class LaunchesFragment : BaseMainFragment() {
     }
 
     fun updateChart(launchesPerYear: List<BarEntry>) = adapter?.updateChart(launchesPerYear)
-    fun updateUI(launches: MutableList<Launch>) = adapter?.updateLaunches(launches)
+    fun updateUI(launches: MutableList<LaunchDto>) = adapter?.updateLaunches(launches)
 
     override fun onStop() {
         super.onStop()

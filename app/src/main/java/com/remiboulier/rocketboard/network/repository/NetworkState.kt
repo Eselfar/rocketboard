@@ -1,12 +1,6 @@
-package com.remiboulier.rocketboard.network
+package com.remiboulier.rocketboard.network.repository
 
 import android.support.annotation.StringRes
-
-enum class Status {
-    RUNNING,
-    SUCCESS,
-    FAILED
-}
 
 @Suppress("DataClassPrivateConstructor")
 data class NetworkState private constructor(
@@ -19,4 +13,10 @@ data class NetworkState private constructor(
 
         fun error(msg: Int) = NetworkState(Status.FAILED, msg)
     }
+}
+
+enum class Status {
+    RUNNING,
+    SUCCESS,
+    FAILED
 }

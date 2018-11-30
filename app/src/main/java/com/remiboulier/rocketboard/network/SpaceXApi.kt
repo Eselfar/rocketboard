@@ -1,7 +1,7 @@
 package com.remiboulier.rocketboard.network
 
-import com.remiboulier.rocketboard.model.Launch
-import com.remiboulier.rocketboard.model.Rocket
+import com.remiboulier.rocketboard.network.dto.LaunchDto
+import com.remiboulier.rocketboard.network.dto.RocketDto
 import io.reactivex.Observable
 import retrofit2.http.GET
 
@@ -13,8 +13,8 @@ import retrofit2.http.GET
 interface SpaceXApi {
 
     @GET("rockets")
-    fun getRockets(): Observable<MutableList<Rocket>>
+    fun getRockets(): Observable<MutableList<RocketDto>>
 
     @GET("launches")
-    fun getLaunches(): Observable<MutableList<Launch>>
+    fun getLaunches(): Observable<MutableList<LaunchDto>>
 }

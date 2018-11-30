@@ -3,9 +3,9 @@ package com.remiboulier.rocketboard.screen.launches
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.github.mikephil.charting.data.BarEntry
-import com.remiboulier.rocketboard.model.Launch
-import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
+import com.remiboulier.rocketboard.network.dto.LaunchDto
+import com.remiboulier.rocketboard.network.repository.NetworkState
 import com.remiboulier.rocketboard.util.getErrorMessage
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,7 +21,7 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
                                 private val rocketId: String)
     : ViewModel() {
 
-    val launchesLiveData = MutableLiveData<MutableList<Launch>>()
+    val launchesLiveData = MutableLiveData<MutableList<LaunchDto>>()
     val networkState = MutableLiveData<NetworkState>()
     val launchesPerYearLiveData = MutableLiveData<List<BarEntry>>()
 
@@ -53,7 +53,7 @@ class LaunchesFragmentViewModel(private val spaceXApi: SpaceXApi,
                         }))
     }
 
-    fun generateLaunchesPerYearMap(launches: MutableList<Launch>): List<BarEntry> =
+    fun generateLaunchesPerYearMap(launches: MutableList<LaunchDto>): List<BarEntry> =
             mutableListOf<BarEntry>().apply {
                 val map = launches.groupingBy { it.launchYear }.eachCount()
                 for (entry in map) {
