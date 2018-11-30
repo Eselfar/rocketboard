@@ -32,13 +32,13 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
     fun getLaunches(rocketId: String,
                     forceRefresh: Boolean,
                     callback: (launches: List<LaunchEntity>) -> Unit) {
+        networkState.postValue(NetworkState.LOADING)
         if (!forceRefresh) getLaunchesFromDB(rocketId, callback)
         else getLaunchesFromAPI(rocketId, callback)
     }
 
     fun getLaunchesFromDB(rocketId: String,
                           callback: (launches: List<LaunchEntity>) -> Unit) {
-        networkState.postValue(NetworkState.LOADING)
         disposables.add(launchDao.getAllForRocketIdAsync(rocketId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,7 +49,6 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
 
     fun getLaunchesFromAPI(rocketId: String,
                            callback: (launches: List<LaunchEntity>) -> Unit) {
-        networkState.postValue(NetworkState.LOADING)
         disposables.add(spaceXApi.getLaunches()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
