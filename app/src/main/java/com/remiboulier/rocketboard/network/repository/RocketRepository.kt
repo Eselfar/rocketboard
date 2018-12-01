@@ -66,10 +66,14 @@ class RocketRepository(private val spaceXApi: SpaceXApi,
             getRocketsFromAPI(callback)
     }
 
-    fun onGetFromAPISuccess(rockets: List<RocketDto>,
+    fun onGetFromAPISuccess(rocketDtos: List<RocketDto>,
                             callback: (rockets: List<RocketEntity>) -> Unit) {
         val mapper = Mappers.getMapper(RocketDtoToEntityMapper::class.java)
-        saveInDatabase(rockets.map(mapper::map), callback)
+        val rocketEntities = rocketDtos.map(mapper::map)
+        saveInDatabase(rocketEntities) {
+            callback(rocketEntities)
+            networkState.postValue(NetworkState.LOADED)
+        }
     }
 
     fun onRxError(t: Throwable) {
@@ -78,17 +82,14 @@ class RocketRepository(private val spaceXApi: SpaceXApi,
     }
 
     private fun saveInDatabase(rockets: List<RocketEntity>,
-                               callback: (rockets: List<RocketEntity>) -> Unit) {
+                               onSaved: () -> Unit) {
         Completable.fromAction { rocketDao.saveAll(rockets) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : CompletableObserver {
                     override fun onSubscribe(d: Disposable) {}
 
-                    override fun onComplete() {
-                        callback(rockets)
-                        networkState.postValue(NetworkState.LOADED)
-                    }
+                    override fun onComplete() = onSaved()
 
                     override fun onError(t: Throwable) = onRxError(t)
                 })

@@ -73,11 +73,15 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
                             callback: (launches: List<LaunchEntity>) -> Unit) {
         val mapper = Mappers.getMapper(LaunchDtoToEntity::class.java)
         val launches = dtos.map(mapper::map)
-        saveInDatabase(launches) { callback(filterEntities(rocketId, it)) }
+        saveInDatabase(launches) {
+            callback(filterEntities(rocketId, launches))
+            networkState.postValue(NetworkState.LOADED)
+        }
     }
 
     fun filterEntities(rocketId: String,
-                       dtos: List<LaunchEntity>): List<LaunchEntity> =
+                       dtos: List<LaunchEntity>)
+            : List<LaunchEntity> =
             dtos.filter { launch -> launch.rocketId == rocketId }
 
     fun onRxError(t: Throwable) {
@@ -86,17 +90,14 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
     }
 
     private fun saveInDatabase(launches: List<LaunchEntity>,
-                               callback: (rockets: List<LaunchEntity>) -> Unit) {
+                               onSaved: () -> Unit) {
         Completable.fromAction { launchDao.saveAll(launches) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : CompletableObserver {
                     override fun onSubscribe(d: Disposable) {}
 
-                    override fun onComplete() {
-                        callback(launches)
-                        networkState.postValue(NetworkState.LOADED)
-                    }
+                    override fun onComplete() = onSaved()
 
                     override fun onError(t: Throwable) = onRxError(t)
                 })
