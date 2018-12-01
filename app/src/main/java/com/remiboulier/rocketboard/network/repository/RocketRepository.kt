@@ -2,6 +2,7 @@ package com.remiboulier.rocketboard.network.repository
 
 import android.arch.lifecycle.MutableLiveData
 import com.remiboulier.rocketboard.mapper.RocketDtoToEntityMapper
+import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.dto.RocketDto
 import com.remiboulier.rocketboard.room.dao.RocketDao

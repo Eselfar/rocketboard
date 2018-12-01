@@ -16,9 +16,9 @@ import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayWelcomeDialog
-import com.remiboulier.rocketboard.network.repository.NetworkState
+import com.remiboulier.rocketboard.network.NetworkState
+import com.remiboulier.rocketboard.network.Status
 import com.remiboulier.rocketboard.network.repository.RocketRepository
-import com.remiboulier.rocketboard.network.repository.Status
 import com.remiboulier.rocketboard.room.entity.RocketEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.screen.launches.LaunchesFragment

@@ -1,4 +1,4 @@
-package com.remiboulier.rocketboard.network.repository
+package com.remiboulier.rocketboard.network
 
 import android.support.annotation.StringRes
 

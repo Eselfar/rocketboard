@@ -18,9 +18,9 @@ import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
+import com.remiboulier.rocketboard.network.NetworkState
+import com.remiboulier.rocketboard.network.Status
 import com.remiboulier.rocketboard.network.repository.LaunchRepository
-import com.remiboulier.rocketboard.network.repository.NetworkState
-import com.remiboulier.rocketboard.network.repository.Status
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.util.BundleConstants
