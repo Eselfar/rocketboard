@@ -6,15 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".screen.launches.LaunchesFragment">
 
-    <!-- Required for the sticky header -->
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/launchesRecycler"
+        <ProgressBar
+            android:id="@+id/launchesProgress"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+        <!-- Required for the sticky header -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_recycler_launches" />
-    </FrameLayout>
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/launchesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_recycler_launches" />
+        </FrameLayout>
+
+    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

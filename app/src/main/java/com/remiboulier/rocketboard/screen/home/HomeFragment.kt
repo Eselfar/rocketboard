@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
-import com.remiboulier.rocketboard.extension.displayProgressDialog
 import com.remiboulier.rocketboard.extension.displayWelcomeDialog
 import com.remiboulier.rocketboard.network.repository.NetworkState
 import com.remiboulier.rocketboard.network.repository.RocketRepository
@@ -109,10 +108,18 @@ class HomeFragment : BaseMainFragment() {
 
     fun updateState(networkState: NetworkState) =
             when (networkState.status) {
-                Status.RUNNING -> container.displayProgressDialog(context!!)
-                Status.SUCCESS -> container.dismissDialog()
+                Status.RUNNING -> showProgress()
+                Status.SUCCESS -> hideProgress()
                 Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
             }
+
+    fun showProgress() {
+        rocketsProgress.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        rocketsProgress.visibility = View.INVISIBLE
+    }
 
     fun getViewModel(rocketRepo: RocketRepository,
                      prefsHelper: SharedPreferencesHelper): HomeFragmentViewModel =

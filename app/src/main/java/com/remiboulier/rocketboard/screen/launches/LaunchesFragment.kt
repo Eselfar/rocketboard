@@ -18,7 +18,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
-import com.remiboulier.rocketboard.extension.displayProgressDialog
 import com.remiboulier.rocketboard.network.repository.LaunchRepository
 import com.remiboulier.rocketboard.network.repository.NetworkState
 import com.remiboulier.rocketboard.network.repository.Status
@@ -125,10 +124,18 @@ class LaunchesFragment : BaseMainFragment() {
 
     fun updateState(networkState: NetworkState) =
             when (networkState.status) {
-                Status.RUNNING -> container.displayProgressDialog(context!!)
-                Status.SUCCESS -> container.dismissDialog()
+                Status.RUNNING -> showProgress()
+                Status.SUCCESS -> hideProgress()
                 Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
             }
+
+    fun showProgress() {
+        launchesProgress.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        launchesProgress.visibility = View.INVISIBLE
+    }
 
     fun getViewModel(launchRepo: LaunchRepository,
                      rocketId: String)

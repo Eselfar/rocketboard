@@ -17,10 +17,9 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
             val fragment = HomeFragment()
             supportFragmentManager
                     .beginTransaction()
-//                    .setCustomAnimations(
-//                            0, 0,
-//                        R.anim.enter_from_right, R.anim.exit_to_left,
-//                            R.anim.enter_from_left, R.anim.exit_to_right)
+                    .setCustomAnimations(
+                            0, 0,
+                            R.anim.enter_from_left, R.anim.exit_to_right)
                     .add(R.id.fragment_container, fragment, fragment.javaClass.simpleName)
                     .commit()
         }
@@ -29,9 +28,9 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
     override fun goToFragment(fragment: Fragment) {
         val fragmentName = fragment.javaClass.simpleName
         supportFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                        R.anim.enter_from_right, R.anim.exit_to_left,
-//                        R.anim.enter_from_left, R.anim.exit_to_right)
+                .setCustomAnimations(
+                        R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.fragment_container, fragment, fragmentName)
                 .addToBackStack(fragmentName)
                 .commit()
