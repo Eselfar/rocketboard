@@ -5,10 +5,17 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.remiboulier.rocketboard.screen.home.HomeFragment
+import com.remiboulier.rocketboard.screen.home.TestItem
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
 
+    @Inject
+    lateinit var testItem: TestItem
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -23,6 +30,8 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
                     .add(R.id.fragment_container, fragment, fragment.javaClass.simpleName)
                     .commit()
         }
+
+        testItem.alive()
     }
 
     override fun goToFragment(fragment: Fragment) {
