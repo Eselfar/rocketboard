@@ -27,7 +27,7 @@ open class HomeFragmentViewModel(private val rocketRepo: RocketRepository,
     }
 
     fun loadRockets(forceRefresh: Boolean) {
-        if (rockets.isNotEmpty()) {
+        if (rockets.isNotEmpty() && !forceRefresh) {
             rocketsLiveData.postValue(filterResults(rockets, activeOnly))
         } else {
             rocketRepo.getRockets(forceRefresh) {

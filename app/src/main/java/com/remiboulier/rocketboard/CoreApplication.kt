@@ -29,7 +29,7 @@ class CoreApplication : Application(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
         DaggerApplicationComponent.create()
-                .inject(this);
+                .inject(this)
 
         val okHttpClient = provideOkHttpClient(this)
         spaceXApi = provideRetrofitClient(SpaceXApiConstants.BASE_URL, okHttpClient)

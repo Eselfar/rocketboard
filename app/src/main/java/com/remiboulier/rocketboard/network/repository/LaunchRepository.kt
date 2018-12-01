@@ -72,13 +72,13 @@ class LaunchRepository(private val spaceXApi: SpaceXApi,
                             dtos: List<LaunchDto>,
                             callback: (launches: List<LaunchEntity>) -> Unit) {
         val mapper = Mappers.getMapper(LaunchDtoToEntity::class.java)
-        val launches = filterAPIResult(rocketId, dtos).map(mapper::map)
-        saveInDatabase(launches, callback)
+        val launches = dtos.map(mapper::map)
+        saveInDatabase(launches) { callback(filterEntities(rocketId, it)) }
     }
 
-    fun filterAPIResult(rocketId: String,
-                        dtos: List<LaunchDto>): List<LaunchDto> =
-            dtos.filter { launch -> launch.rocket.rocketId == rocketId }
+    fun filterEntities(rocketId: String,
+                       dtos: List<LaunchEntity>): List<LaunchEntity> =
+            dtos.filter { launch -> launch.rocketId == rocketId }
 
     fun onRxError(t: Throwable) {
         t.printStackTrace()

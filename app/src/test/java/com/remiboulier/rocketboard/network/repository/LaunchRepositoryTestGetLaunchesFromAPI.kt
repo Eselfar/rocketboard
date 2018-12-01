@@ -3,9 +3,8 @@ package com.remiboulier.rocketboard.network.repository
 import com.nhaarman.mockitokotlin2.any
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.dto.LaunchDto
-import com.remiboulier.rocketboard.network.dto.LinksDto
-import com.remiboulier.rocketboard.network.dto.RocketDetailsDto
 import com.remiboulier.rocketboard.room.dao.LaunchDao
+import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.testutil.RxJavaTestSetup
 import io.reactivex.Observable
 import org.junit.Test
@@ -65,25 +64,26 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
     }
 
     @Test
-    fun filterAPIResult_filters_correctly() {
+    fun filterEntities_filters_correctly() {
         val rocketId = "42"
         val rocketIds = listOf(rocketId, "0", rocketId)
-        val launches = List(rocketIds.size) { index -> initLaunchDtoForTest(rocketIds[index]) }
+        val launches = List(rocketIds.size) { index -> initLaunchEntityForTest(rocketIds[index]) }
 
         val repo = LaunchRepository(spaceXApi, launchDao)
-        val res = repo.filterAPIResult(rocketId, launches)
+        val res = repo.filterEntities(rocketId, launches)
 
 
         assert(res.size == 2)
 
-        val group = res.groupingBy { it.rocket.rocketId }.eachCount()
+        val group = res.groupingBy { it.rocketId }.eachCount()
         assert(group.size == 1 && group[rocketId] == 2)
     }
 
-    private fun initLaunchDtoForTest(rocketId: String): LaunchDto {
-        return LaunchDto(0, null, false, 0,
+    private fun initLaunchEntityForTest(rocketId: String): LaunchEntity {
+        return LaunchEntity(0, null,
+                false, 0,
                 null, null,
-                RocketDetailsDto(rocketId, ""),
-                null, mock(LinksDto::class.java))
+                null, rocketId, "",
+                null, null)
     }
 }
