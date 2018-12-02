@@ -23,12 +23,6 @@ import org.mockito.Mockito.*
 @RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class HomeFragmentViewModelTest {
 
-    /**
-     * Workaround to prevent any(Class) from Mockito to throw an IllegalStateException
-     * See https://stackoverflow.com/a/48805160/1827254
-     */
-    private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
-
     @Mock
     lateinit var rocketRepo: RocketRepository
 
@@ -189,6 +183,10 @@ class HomeFragmentViewModelTest {
     }
 
 
+    /**
+     * "This rule will make sure that the writing of the value will synchronous instead of asynchronous"
+     * @see [Online Post](https://proandroiddev.com/how-to-unit-test-livedata-and-lifecycle-components-8a0af41c90d9)
+     */
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 

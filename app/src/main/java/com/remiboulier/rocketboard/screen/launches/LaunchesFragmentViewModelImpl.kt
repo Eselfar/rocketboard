@@ -11,7 +11,7 @@ import com.remiboulier.rocketboard.room.entity.LaunchEntity
  * email: boulier.r.job@gmail.com
  */
 
-class LaunchesFragmentViewModelImpl(private val launchesRepo: LaunchRepository)
+open class LaunchesFragmentViewModelImpl(private val launchesRepo: LaunchRepository)
     : ViewModel(), LaunchesFragmentViewModel {
 
     private val launchesLiveData = MutableLiveData<List<LaunchEntity>>()
