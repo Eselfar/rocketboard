@@ -2,9 +2,6 @@ package com.remiboulier.rocketboard.screen.launches
 
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -19,7 +16,6 @@ import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.Status
-import com.remiboulier.rocketboard.network.repository.LaunchRepository
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.util.BundleConstants
@@ -32,10 +28,10 @@ import javax.inject.Inject
 
 class LaunchesFragment : BaseMainFragment() {
 
-    private lateinit var viewModel: LaunchesFragmentViewModel
-
     @Inject
-    lateinit var launchRepo: LaunchRepository
+    lateinit var viewModel: LaunchesFragmentViewModel
+
+    private lateinit var rocketId: String
 
     private var adapter: LaunchAdapter? = null
     private var container: DialogContainer = DialogContainer()
@@ -58,10 +54,9 @@ class LaunchesFragment : BaseMainFragment() {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
-        val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
+        rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
 
-        viewModel = getViewModel(launchRepo, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
         viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
@@ -103,7 +98,7 @@ class LaunchesFragment : BaseMainFragment() {
         container.dismissDialog()
     }
 
-    fun loadData(forceRefresh: Boolean = false) = viewModel.loadLaunches(forceRefresh)
+    fun loadData(forceRefresh: Boolean = false) = viewModel.loadLaunches(rocketId, forceRefresh)
 
     fun initAdapter(description: String,
                     glideRequests: GlideRequests) {
@@ -138,17 +133,6 @@ class LaunchesFragment : BaseMainFragment() {
     fun hideProgress() {
         launchesProgress.visibility = View.INVISIBLE
     }
-
-    fun getViewModel(launchRepo: LaunchRepository,
-                     rocketId: String)
-            : LaunchesFragmentViewModel =
-
-            ViewModelProviders.of(this, object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    @Suppress("UNCHECKED_CAST")
-                    return LaunchesFragmentViewModel(launchRepo, rocketId) as T
-                }
-            })[LaunchesFragmentViewModel::class.java]
 }
 
 class MissingArgumentException : RuntimeException("Missing required Fragment argument")

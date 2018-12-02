@@ -41,14 +41,15 @@ class HomeFragmentModule {
     }
 
     @Provides
-    fun provideFeatureViewModel(rocketRepo: RocketRepository,
-                                prefsHelper: SharedPreferencesHelper,
-                                target: HomeFragment
-    ) = ViewModelProviders
-            .of(target, object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    @Suppress("UNCHECKED_CAST")
-                    return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
-                }
-            }).get(HomeFragmentViewModel::class.java)
+    fun provideHomeFragmentViewModel(rocketRepo: RocketRepository,
+                                     prefsHelper: SharedPreferencesHelper,
+                                     target: HomeFragment
+    ): HomeFragmentViewModel =
+            ViewModelProviders
+                    .of(target, object : ViewModelProvider.Factory {
+                        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                            @Suppress("UNCHECKED_CAST")
+                            return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
+                        }
+                    }).get(HomeFragmentViewModel::class.java)
 }

@@ -11,8 +11,7 @@ import com.remiboulier.rocketboard.room.entity.LaunchEntity
  * email: boulier.r.job@gmail.com
  */
 
-class LaunchesFragmentViewModel(private val launchesRepo: LaunchRepository,
-                                private val rocketId: String)
+class LaunchesFragmentViewModel(private val launchesRepo: LaunchRepository)
     : ViewModel() {
 
     val launchesLiveData = MutableLiveData<List<LaunchEntity>>()
@@ -24,7 +23,7 @@ class LaunchesFragmentViewModel(private val launchesRepo: LaunchRepository,
         launchesRepo.clear()
     }
 
-    fun loadLaunches(forceRefresh: Boolean) {
+    fun loadLaunches(rocketId: String, forceRefresh: Boolean) {
         launchesRepo.getLaunches(rocketId, forceRefresh) {
             launchesLiveData.postValue(it)
             launchesPerYearLiveData.postValue(generateLaunchesPerYearMap(it))

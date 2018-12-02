@@ -1,5 +1,8 @@
 package com.remiboulier.rocketboard.screen.launches
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import com.remiboulier.rocketboard.SpaceXDatabase
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.repository.LaunchRepository
@@ -35,4 +38,16 @@ class LaunchesFragmentModule {
             : LaunchRepository {
         return LaunchRepositoryImpl(spaceXApi, spaceXDatabase.launchDao())
     }
+
+    @Provides
+    fun provideLaunchesFragmentViewModel(launchRepo: LaunchRepository,
+                                         target: LaunchesFragment
+    ): LaunchesFragmentViewModel =
+            ViewModelProviders
+                    .of(target, object : ViewModelProvider.Factory {
+                        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                            @Suppress("UNCHECKED_CAST")
+                            return LaunchesFragmentViewModel(launchRepo) as T
+                        }
+                    })[LaunchesFragmentViewModel::class.java]
 }
