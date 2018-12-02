@@ -57,9 +57,9 @@ class LaunchesFragment : BaseMainFragment() {
         rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
 
-        viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })
-        viewModel.launchesPerYearLiveData.observe(this, Observer { updateChart(it!!) })
-        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
+        viewModel.getLaunchesLiveData().observe(this, Observer { updateUI(it!!) })
+        viewModel.getLaunchesPerYearLiveData().observe(this, Observer { updateChart(it!!) })
+        viewModel.getNetworkState().observe(this, Observer { onNetworkStateChange(it!!) })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

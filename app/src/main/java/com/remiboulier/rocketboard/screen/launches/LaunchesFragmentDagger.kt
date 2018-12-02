@@ -47,7 +47,7 @@ class LaunchesFragmentModule {
                     .of(target, object : ViewModelProvider.Factory {
                         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                             @Suppress("UNCHECKED_CAST")
-                            return LaunchesFragmentViewModel(launchRepo) as T
+                            return LaunchesFragmentViewModelImpl(launchRepo) as T
                         }
-                    })[LaunchesFragmentViewModel::class.java]
+                    })[LaunchesFragmentViewModelImpl::class.java]
 }

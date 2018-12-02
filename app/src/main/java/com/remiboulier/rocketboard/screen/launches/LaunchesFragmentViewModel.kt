@@ -1,9 +1,9 @@
 package com.remiboulier.rocketboard.screen.launches
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import com.github.mikephil.charting.data.BarEntry
-import com.remiboulier.rocketboard.network.repository.LaunchRepository
+import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 
 /**
@@ -11,30 +11,15 @@ import com.remiboulier.rocketboard.room.entity.LaunchEntity
  * email: boulier.r.job@gmail.com
  */
 
-class LaunchesFragmentViewModel(private val launchesRepo: LaunchRepository)
-    : ViewModel() {
+interface LaunchesFragmentViewModel {
 
-    val launchesLiveData = MutableLiveData<List<LaunchEntity>>()
-    val launchesPerYearLiveData = MutableLiveData<List<BarEntry>>()
-    val networkState = launchesRepo.getNetworkStateLiveData()
+    fun getLaunchesLiveData(): MutableLiveData<List<LaunchEntity>>
 
-    override fun onCleared() {
-        super.onCleared()
-        launchesRepo.clear()
-    }
+    fun getLaunchesPerYearLiveData(): MutableLiveData<List<BarEntry>>
 
-    fun loadLaunches(rocketId: String, forceRefresh: Boolean) {
-        launchesRepo.getLaunches(rocketId, forceRefresh) {
-            launchesLiveData.postValue(it)
-            launchesPerYearLiveData.postValue(generateLaunchesPerYearMap(it))
-        }
-    }
+    fun getNetworkState(): LiveData<NetworkState>
 
-    fun generateLaunchesPerYearMap(launches: List<LaunchEntity>): List<BarEntry> =
-            mutableListOf<BarEntry>().apply {
-                val map = launches.groupingBy { it.launchYear }.eachCount()
-                for (entry in map) {
-                    add(BarEntry(entry.key.toFloat(), entry.value.toFloat()))
-                }
-            }
+    fun loadLaunches(rocketId: String, forceRefresh: Boolean)
+
+    fun generateLaunchesPerYearMap(launches: List<LaunchEntity>): List<BarEntry>
 }
