@@ -3,12 +3,12 @@ package com.remiboulier.rocketboard
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    AndroidInjectionModule::class,
+    AndroidSupportInjectionModule::class,
     CoreApplicationModule::class,
     ActivityBuilderModule::class
 ])

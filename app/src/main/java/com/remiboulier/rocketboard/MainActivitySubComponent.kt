@@ -1,5 +1,6 @@
 package com.remiboulier.rocketboard
 
+import com.remiboulier.rocketboard.screen.FragmentBuilderModule
 import com.remiboulier.rocketboard.util.ActivityScope
 import dagger.Subcomponent
 import dagger.android.AndroidInjector
@@ -10,7 +11,10 @@ import dagger.android.AndroidInjector
  */
 
 @ActivityScope
-@Subcomponent(modules = [MainActivityModule::class])
+@Subcomponent(modules = [
+    MainActivityModule::class,
+    FragmentBuilderModule::class
+])
 interface MainActivitySubComponent : AndroidInjector<MainActivity> {
 
     @Subcomponent.Builder

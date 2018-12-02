@@ -25,6 +25,7 @@ import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
 import com.remiboulier.rocketboard.util.SharedPreferencesHelper
 import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseMainFragment() {
@@ -35,6 +36,7 @@ class HomeFragment : BaseMainFragment() {
     private var container: DialogContainer = DialogContainer()
 
     override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
         super.onAttach(context)
         val rocketRepo = RocketRepository(
                 (activity!!.application as CoreApplication).spaceXApi,

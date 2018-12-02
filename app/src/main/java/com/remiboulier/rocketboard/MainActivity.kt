@@ -7,12 +7,20 @@ import android.view.MenuItem
 import com.remiboulier.rocketboard.screen.home.HomeFragment
 import com.remiboulier.rocketboard.screen.home.TestItem
 import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainActivityCallback {
+class MainActivity : AppCompatActivity(), MainActivityCallback, HasSupportFragmentInjector {
+
+    @Inject
+    lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     @Inject
     lateinit var testItem: TestItem
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = dispatchingFragmentInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

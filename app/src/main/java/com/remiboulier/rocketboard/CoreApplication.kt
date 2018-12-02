@@ -24,15 +24,13 @@ class CoreApplication : Application(), HasActivityInjector {
     @Inject
     lateinit var spaceXDB: SpaceXDatabase
 
+    override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector
+
     override fun onCreate() {
         DaggerCoreApplicationComponent.builder()
                 .application(this)
                 .build()
                 .inject(this)
         super.onCreate()
-    }
-
-    override fun activityInjector(): AndroidInjector<Activity> {
-        return dispatchingActivityInjector
     }
 }
