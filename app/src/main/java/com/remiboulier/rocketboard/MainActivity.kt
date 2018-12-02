@@ -4,15 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.MenuItem
 import com.remiboulier.rocketboard.screen.home.HomeFragment
-import com.remiboulier.rocketboard.screen.home.TestItem
 import dagger.android.AndroidInjection
 import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity(), MainActivityCallback {
-
-    @Inject
-    lateinit var testItem: TestItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -30,8 +25,6 @@ class MainActivity : DaggerAppCompatActivity(), MainActivityCallback {
                     .add(R.id.fragment_container, fragment, fragment.javaClass.simpleName)
                     .commit()
         }
-
-        testItem.alive()
     }
 
     override fun goToFragment(fragment: Fragment) {
