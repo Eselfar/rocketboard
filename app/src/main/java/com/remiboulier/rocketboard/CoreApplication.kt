@@ -2,11 +2,7 @@ package com.remiboulier.rocketboard
 
 import android.app.Activity
 import android.app.Application
-import android.arch.persistence.room.Room
 import com.remiboulier.rocketboard.network.SpaceXApi
-import com.remiboulier.rocketboard.network.provideOkHttpClient
-import com.remiboulier.rocketboard.network.provideRetrofitClient
-import com.remiboulier.rocketboard.util.SpaceXApiConstants
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -23,22 +19,17 @@ class CoreApplication : Application(), HasActivityInjector {
     @Inject
     lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
 
+    @Inject
     lateinit var spaceXApi: SpaceXApi
+    @Inject
     lateinit var spaceXDB: SpaceXDatabase
 
     override fun onCreate() {
-        super.onCreate()
-        DaggerApplicationComponent.create()
-                .inject(this)
-
-        val okHttpClient = provideOkHttpClient(this)
-        spaceXApi = provideRetrofitClient(SpaceXApiConstants.BASE_URL, okHttpClient)
-                .create(SpaceXApi::class.java)
-
-        spaceXDB = Room.databaseBuilder(
-                applicationContext,
-                SpaceXDatabase::class.java, "SpaceX_Database")
+        DaggerCoreApplicationComponent.builder()
+                .application(this)
                 .build()
+                .inject(this)
+        super.onCreate()
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {
