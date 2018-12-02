@@ -20,8 +20,7 @@ open class HomeFragmentViewModelImpl(private val rocketRepo: RocketRepository,
     private val rocketsLiveData = MutableLiveData<List<RocketEntity>>()
     private val networkState = rocketRepo.getNetworkStateLiveData()
 
-    private var activeOnly = false
-
+    var activeOnly = false
     var rockets = listOf<RocketEntity>()
 
     override fun getRocketsLiveData(): LiveData<List<RocketEntity>> = rocketsLiveData

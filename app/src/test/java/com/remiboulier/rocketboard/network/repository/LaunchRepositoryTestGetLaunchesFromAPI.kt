@@ -67,7 +67,9 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
     fun filterEntities_filters_correctly() {
         val rocketId = "42"
         val rocketIds = listOf(rocketId, "0", rocketId)
-        val launches = List(rocketIds.size) { index -> initLaunchEntityForTest(rocketIds[index]) }
+        val launches = List(rocketIds.size) { index ->
+            LaunchEntity().apply { this.rocketId = rocketIds[index] }
+        }
 
         val repo = LaunchRepositoryImpl(spaceXApi, launchDao)
         val res = repo.filterEntities(rocketId, launches)
@@ -77,13 +79,5 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
 
         val group = res.groupingBy { it.rocketId }.eachCount()
         assert(group.size == 1 && group[rocketId] == 2)
-    }
-
-    private fun initLaunchEntityForTest(rocketId: String): LaunchEntity {
-        return LaunchEntity(0, null,
-                false, 0,
-                null, null,
-                null, rocketId, "",
-                null, null)
     }
 }
