@@ -49,7 +49,7 @@ class HomeFragmentModule {
                     .of(target, object : ViewModelProvider.Factory {
                         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                             @Suppress("UNCHECKED_CAST")
-                            return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
+                            return HomeFragmentViewModelImpl(rocketRepo, prefsHelper) as T
                         }
-                    }).get(HomeFragmentViewModel::class.java)
+                    }).get(HomeFragmentViewModelImpl::class.java)
 }

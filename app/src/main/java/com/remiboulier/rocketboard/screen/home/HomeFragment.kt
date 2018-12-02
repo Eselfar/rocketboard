@@ -34,8 +34,8 @@ class HomeFragment : BaseMainFragment() {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
-        viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
-        viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
+        viewModel.getRocketsLiveData().observe(this, Observer { updateRocketList(it!!) })
+        viewModel.getNetworkState().observe(this, Observer { onNetworkStateChange(it!!) })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
