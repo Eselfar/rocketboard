@@ -15,7 +15,7 @@ open class HomeFragmentViewModel(private val rocketRepo: RocketRepository,
                                  private val prefsHelper: SharedPreferencesHelper) : ViewModel() {
 
     val rocketsLiveData = MutableLiveData<List<RocketEntity>>()
-    val networkState = rocketRepo.networkState
+    val networkState = rocketRepo.getNetworkStateLiveData()
 
     private var activeOnly = false
 

@@ -6,6 +6,8 @@ import android.content.Context
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.provideOkHttpClient
 import com.remiboulier.rocketboard.network.provideRetrofitClient
+import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
 import com.remiboulier.rocketboard.util.SpaceXApiConstants
 import dagger.Module
 import dagger.Provides
@@ -43,5 +45,11 @@ class CoreApplicationModule {
                 applicationContext,
                 SpaceXDatabase::class.java, "SpaceX_Database")
                 .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferenceHelper(context: Context): SharedPreferencesHelper {
+        return SharedPreferencesHelperImpl(context)
     }
 }

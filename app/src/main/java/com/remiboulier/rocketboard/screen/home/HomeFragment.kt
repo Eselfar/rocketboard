@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayWelcomeDialog
@@ -24,13 +23,19 @@ import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
 import com.remiboulier.rocketboard.util.SharedPreferencesHelper
-import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_home.*
+import javax.inject.Inject
 
 class HomeFragment : BaseMainFragment() {
 
     private lateinit var viewModel: HomeFragmentViewModel
+
+    @Inject
+    lateinit var rocketRepo: RocketRepository
+
+    @Inject
+    lateinit var sharedPrefsHelper: SharedPreferencesHelper
 
     private var adapter: RocketAdapter? = null
     private var container: DialogContainer = DialogContainer()
@@ -38,13 +43,8 @@ class HomeFragment : BaseMainFragment() {
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
-        val rocketRepo = RocketRepository(
-                (activity!!.application as CoreApplication).spaceXApi,
-                (activity!!.application as CoreApplication).spaceXDB.rocketDao())
 
-        viewModel = getViewModel(
-                rocketRepo,
-                SharedPreferencesHelperImpl(activity!!.applicationContext))
+        viewModel = getViewModel(rocketRepo, sharedPrefsHelper)
 
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
