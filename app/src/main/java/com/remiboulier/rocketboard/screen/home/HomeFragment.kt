@@ -2,9 +2,6 @@ package com.remiboulier.rocketboard.screen.home
 
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -17,25 +14,18 @@ import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.extension.displayWelcomeDialog
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.Status
-import com.remiboulier.rocketboard.network.repository.RocketRepository
 import com.remiboulier.rocketboard.room.entity.RocketEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
 import com.remiboulier.rocketboard.util.DialogContainer
-import com.remiboulier.rocketboard.util.SharedPreferencesHelper
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 class HomeFragment : BaseMainFragment() {
 
-    private lateinit var viewModel: HomeFragmentViewModel
-
     @Inject
-    lateinit var rocketRepo: RocketRepository
-
-    @Inject
-    lateinit var sharedPrefsHelper: SharedPreferencesHelper
+    lateinit var viewModel: HomeFragmentViewModel
 
     private var adapter: RocketAdapter? = null
     private var container: DialogContainer = DialogContainer()
@@ -43,8 +33,6 @@ class HomeFragment : BaseMainFragment() {
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
-
-        viewModel = getViewModel(rocketRepo, sharedPrefsHelper)
 
         viewModel.rocketsLiveData.observe(this, Observer { updateRocketList(it!!) })
         viewModel.networkState.observe(this, Observer { onNetworkStateChange(it!!) })
@@ -122,13 +110,4 @@ class HomeFragment : BaseMainFragment() {
     fun hideProgress() {
         rocketsProgress.visibility = View.INVISIBLE
     }
-
-    fun getViewModel(rocketRepo: RocketRepository,
-                     prefsHelper: SharedPreferencesHelper): HomeFragmentViewModel =
-            ViewModelProviders.of(this, object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    @Suppress("UNCHECKED_CAST")
-                    return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
-                }
-            })[HomeFragmentViewModel::class.java]
 }

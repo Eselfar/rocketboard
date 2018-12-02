@@ -1,10 +1,14 @@
 package com.remiboulier.rocketboard.screen.home
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import com.remiboulier.rocketboard.SpaceXDatabase
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.repository.RocketRepository
 import com.remiboulier.rocketboard.network.repository.RocketRepositoryImpl
 import com.remiboulier.rocketboard.util.FragmentScope
+import com.remiboulier.rocketboard.util.SharedPreferencesHelper
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -35,4 +39,16 @@ class HomeFragmentModule {
             : RocketRepository {
         return RocketRepositoryImpl(spaceXApi, spaceXDatabase.rocketDao())
     }
+
+    @Provides
+    fun provideFeatureViewModel(rocketRepo: RocketRepository,
+                                prefsHelper: SharedPreferencesHelper,
+                                target: HomeFragment
+    ) = ViewModelProviders
+            .of(target, object : ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    @Suppress("UNCHECKED_CAST")
+                    return HomeFragmentViewModel(rocketRepo, prefsHelper) as T
+                }
+            }).get(HomeFragmentViewModel::class.java)
 }
