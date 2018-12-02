@@ -123,7 +123,10 @@ class LaunchesFragment : BaseMainFragment() {
             when (networkState.status) {
                 Status.RUNNING -> showProgress()
                 Status.SUCCESS -> hideProgress()
-                Status.FAILED -> container.displayErrorDialog(context!!, networkState.msg!!)
+                Status.FAILED -> {
+                    hideProgress()
+                    container.displayErrorDialog(context!!, networkState.msg!!)
+                }
             }
 
     fun showProgress() {

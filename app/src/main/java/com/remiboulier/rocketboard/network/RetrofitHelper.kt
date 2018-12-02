@@ -33,8 +33,9 @@ fun provideRetrofitClient(baseUrl: String, client: OkHttpClient): Retrofit {
 
 fun provideOkHttpClient(context: Context): OkHttpClient {
     //Enable HTTP logging to logCat on DEBUG builds only
-    val logging = HttpLoggingInterceptor()
-    logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    val logging = HttpLoggingInterceptor().apply {
+        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    }
 
     return OkHttpClient.Builder()
             .connectTimeout(NetworkConstants.TIMEOUT_IN_SECONDS.toLong(), TimeUnit.SECONDS)
