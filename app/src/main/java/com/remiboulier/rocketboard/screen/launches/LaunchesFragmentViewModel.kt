@@ -17,7 +17,7 @@ class LaunchesFragmentViewModel(private val launchesRepo: LaunchRepository,
 
     val launchesLiveData = MutableLiveData<List<LaunchEntity>>()
     val launchesPerYearLiveData = MutableLiveData<List<BarEntry>>()
-    val networkState = launchesRepo.networkState
+    val networkState = launchesRepo.getNetworkStateLiveData()
 
     override fun onCleared() {
         super.onCleared()

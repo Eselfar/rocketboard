@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import com.github.mikephil.charting.data.BarEntry
-import com.remiboulier.rocketboard.CoreApplication
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
 import com.remiboulier.rocketboard.network.NetworkState
@@ -27,11 +26,16 @@ import com.remiboulier.rocketboard.util.BundleConstants
 import com.remiboulier.rocketboard.util.DialogContainer
 import com.remiboulier.rocketboard.util.GlideApp
 import com.remiboulier.rocketboard.util.GlideRequests
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_launches.*
+import javax.inject.Inject
 
 class LaunchesFragment : BaseMainFragment() {
 
     private lateinit var viewModel: LaunchesFragmentViewModel
+
+    @Inject
+    lateinit var launchRepo: LaunchRepository
 
     private var adapter: LaunchAdapter? = null
     private var container: DialogContainer = DialogContainer()
@@ -51,13 +55,11 @@ class LaunchesFragment : BaseMainFragment() {
     }
 
     override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
         val rocketId = arguments?.getString(BundleConstants.ROCKET_ID)
                 ?: throw MissingArgumentException()
-        val launchRepo = LaunchRepository(
-                (activity!!.application as CoreApplication).spaceXApi,
-                (activity!!.application as CoreApplication).spaceXDB.launchDao())
 
         viewModel = getViewModel(launchRepo, rocketId)
         viewModel.launchesLiveData.observe(this, Observer { updateUI(it!!) })

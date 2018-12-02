@@ -1,6 +1,6 @@
 package com.remiboulier.rocketboard.network.repository
 
-import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.LiveData
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.room.entity.RocketEntity
 
@@ -16,5 +16,5 @@ interface RocketRepository {
     fun getRockets(forceRefresh: Boolean,
                    callback: (rockets: List<RocketEntity>) -> Unit)
 
-    fun getNetworkStateLiveData(): MutableLiveData<NetworkState>
+    fun getNetworkStateLiveData(): LiveData<NetworkState>
 }

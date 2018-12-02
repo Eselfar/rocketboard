@@ -39,7 +39,7 @@ class LaunchRepositoryTestGetLaunchesFromDB : RxJavaTestSetup() {
         val launches = MutableList(3) { mock(LaunchEntity::class.java) }
         Mockito.`when`(launchDao.getAllForRocketIdAsync(anyString()))
                 .thenReturn(Single.just(launches))
-        val repo = spy(LaunchRepository(spaceXApi, launchDao))
+        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
 
         repo.getLaunchesFromDB("", {})
 
@@ -54,7 +54,7 @@ class LaunchRepositoryTestGetLaunchesFromDB : RxJavaTestSetup() {
         Mockito.`when`(launchDao.getAllForRocketIdAsync(anyString()))
                 .thenReturn(Single.error(mock(Exception::class.java)))
 
-        val repo = spy(LaunchRepository(spaceXApi, launchDao))
+        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
 
         repo.getLaunchesFromDB("", {})
 

@@ -1,9 +1,7 @@
 package com.remiboulier.rocketboard
 
-import com.remiboulier.rocketboard.network.SpaceXApi
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
-import javax.inject.Inject
 
 
 /**
@@ -13,13 +11,8 @@ import javax.inject.Inject
 
 class CoreApplication : DaggerApplication() {
 
-    @Inject
-    lateinit var spaceXApi: SpaceXApi
-
-    @Inject
-    lateinit var spaceXDB: SpaceXDatabase
-
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerCoreApplicationComponent.builder().create(this)
+        return DaggerCoreApplicationComponent.builder()
+                .create(this)
     }
 }

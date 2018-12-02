@@ -19,7 +19,7 @@ class LaunchRepositoryTestGetLaunches {
     @Test
     fun getLaunches_call_getLaunchesFromDB() {
 
-        val repoSpy = spy(LaunchRepository(
+        val repoSpy = spy(LaunchRepositoryImpl(
                 mock(SpaceXApi::class.java),
                 mock(LaunchDao::class.java)))
 
@@ -39,7 +39,7 @@ class LaunchRepositoryTestGetLaunches {
     @Test
     fun getLaunches_call_getLaunchesFromAPI() {
 
-        val repoSpy = spy(LaunchRepository(
+        val repoSpy = spy(LaunchRepositoryImpl(
                 mock(SpaceXApi::class.java),
                 mock(LaunchDao::class.java)))
 

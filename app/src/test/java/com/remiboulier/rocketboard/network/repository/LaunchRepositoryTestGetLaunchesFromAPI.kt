@@ -39,7 +39,7 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
         val launches = MutableList(3) { mock(LaunchDto::class.java) }
         Mockito.`when`(spaceXApi.getLaunches())
                 .thenReturn(Observable.just(launches))
-        val repo = spy(LaunchRepository(spaceXApi, launchDao))
+        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
 
         doNothing().`when`(repo).onGetFromAPISuccess(anyString(), anyList(), any())
 
@@ -56,7 +56,7 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
         Mockito.`when`(spaceXApi.getLaunches())
                 .thenReturn(Observable.error(mock(Exception::class.java)))
 
-        val repo = spy(LaunchRepository(spaceXApi, launchDao))
+        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
 
         repo.getLaunchesFromAPI("", {})
 
@@ -69,7 +69,7 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
         val rocketIds = listOf(rocketId, "0", rocketId)
         val launches = List(rocketIds.size) { index -> initLaunchEntityForTest(rocketIds[index]) }
 
-        val repo = LaunchRepository(spaceXApi, launchDao)
+        val repo = LaunchRepositoryImpl(spaceXApi, launchDao)
         val res = repo.filterEntities(rocketId, launches)
 
 

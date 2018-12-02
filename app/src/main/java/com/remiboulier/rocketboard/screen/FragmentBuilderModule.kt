@@ -2,6 +2,8 @@ package com.remiboulier.rocketboard.screen
 
 import com.remiboulier.rocketboard.screen.home.HomeFragment
 import com.remiboulier.rocketboard.screen.home.HomeFragmentSubComponent
+import com.remiboulier.rocketboard.screen.launches.LaunchesFragment
+import com.remiboulier.rocketboard.screen.launches.LaunchesFragmentSubComponent
 import dagger.Binds
 import dagger.Module
 import dagger.android.AndroidInjector
@@ -20,5 +22,11 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @ClassKey(HomeFragment::class)
     internal abstract fun bindHomeFragmentInjectorFactory(builder: HomeFragmentSubComponent.Builder)
+            : AndroidInjector.Factory<*>
+
+    @Binds
+    @IntoMap
+    @ClassKey(LaunchesFragment::class)
+    internal abstract fun bindLaunchesFragmentInjectorFactory(builder: LaunchesFragmentSubComponent.Builder)
             : AndroidInjector.Factory<*>
 }

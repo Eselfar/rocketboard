@@ -2,12 +2,14 @@ package com.remiboulier.rocketboard
 
 import com.remiboulier.rocketboard.screen.home.HomeFragmentSubComponent
 import com.remiboulier.rocketboard.screen.home.TestItem
+import com.remiboulier.rocketboard.screen.launches.LaunchesFragmentSubComponent
 import com.remiboulier.rocketboard.util.ActivityScope
 import dagger.Module
 import dagger.Provides
 
 @Module(subcomponents = [
-    HomeFragmentSubComponent::class
+    HomeFragmentSubComponent::class,
+    LaunchesFragmentSubComponent::class
 ])
 class MainActivityModule {
 
