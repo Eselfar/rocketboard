@@ -5,6 +5,7 @@ import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.room.dao.LaunchDao
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 
@@ -13,7 +14,7 @@ import org.mockito.Mockito.*
  * Created by Remi BOULIER on 30/11/2018.
  * email: boulier.r.job@gmail.com
  */
-
+@RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class LaunchRepositoryTestGetLaunches {
 
     @Test

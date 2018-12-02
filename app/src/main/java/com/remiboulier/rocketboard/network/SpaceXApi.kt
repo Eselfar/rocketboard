@@ -13,8 +13,8 @@ import retrofit2.http.GET
 interface SpaceXApi {
 
     @GET("rockets")
-    fun getRockets(): Observable<MutableList<RocketDto>>
+    fun getRockets(): Observable<List<RocketDto>>
 
     @GET("launches")
-    fun getLaunches(): Observable<MutableList<LaunchDto>>
+    fun getLaunches(): Observable<List<LaunchDto>>
 }

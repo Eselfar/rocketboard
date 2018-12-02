@@ -36,12 +36,12 @@ class RocketRepositoryImpl(private val spaceXApi: SpaceXApi,
 
     override fun getRockets(forceRefresh: Boolean,
                             callback: (rockets: List<RocketEntity>) -> Unit) {
+        networkStateLiveData.postValue(NetworkState.LOADING)
         if (!forceRefresh) getRocketsFromDB(callback)
         else getRocketsFromAPI(callback)
     }
 
     fun getRocketsFromDB(callback: (rockets: List<RocketEntity>) -> Unit) {
-        networkStateLiveData.postValue(NetworkState.LOADING)
         disposables.add(rocketDao.getAllAsync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -51,7 +51,6 @@ class RocketRepositoryImpl(private val spaceXApi: SpaceXApi,
     }
 
     fun getRocketsFromAPI(callback: (rockets: List<RocketEntity>) -> Unit) {
-        networkStateLiveData.postValue(NetworkState.LOADING)
         disposables.add(spaceXApi.getRockets()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
