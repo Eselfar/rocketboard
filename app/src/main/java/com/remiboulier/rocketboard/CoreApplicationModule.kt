@@ -1,6 +1,5 @@
 package com.remiboulier.rocketboard
 
-import android.app.Application
 import android.arch.persistence.room.Room
 import android.content.Context
 import com.remiboulier.rocketboard.network.SpaceXApi
@@ -26,7 +25,7 @@ class CoreApplicationModule {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
+    fun provideContext(application: CoreApplication): Context {
         return application
     }
 

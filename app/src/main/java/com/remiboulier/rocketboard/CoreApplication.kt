@@ -1,11 +1,8 @@
 package com.remiboulier.rocketboard
 
-import android.app.Activity
-import android.app.Application
 import com.remiboulier.rocketboard.network.SpaceXApi
 import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.DaggerApplication
 import javax.inject.Inject
 
 
@@ -14,23 +11,15 @@ import javax.inject.Inject
  * email: boulier.r.job@gmail.com
  */
 
-class CoreApplication : Application(), HasActivityInjector {
-
-    @Inject
-    lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
+class CoreApplication : DaggerApplication() {
 
     @Inject
     lateinit var spaceXApi: SpaceXApi
+
     @Inject
     lateinit var spaceXDB: SpaceXDatabase
 
-    override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector
-
-    override fun onCreate() {
-        DaggerCoreApplicationComponent.builder()
-                .application(this)
-                .build()
-                .inject(this)
-        super.onCreate()
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerCoreApplicationComponent.builder().create(this)
     }
 }

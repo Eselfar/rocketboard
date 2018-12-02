@@ -4,9 +4,8 @@ package com.remiboulier.rocketboard.util
 import javax.inject.Scope
 
 /**
- * Created by Remi BOULIER on 01/06/2017.
- * email: remiboulier@warmup.com
- * © WARMUP PLC
+ * Created by Remi BOULIER on 02/12/2018.
+ * email: boulier.r.job@gmail.com
  */
 
 @Scope
