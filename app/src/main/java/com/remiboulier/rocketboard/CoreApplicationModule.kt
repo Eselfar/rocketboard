@@ -17,7 +17,9 @@ import javax.inject.Singleton
  * email: boulier.r.job@gmail.com
  */
 
-@Module
+@Module(subcomponents = [
+    MainActivitySubComponent::class
+])
 class CoreApplicationModule {
 
     @Provides
@@ -33,7 +35,6 @@ class CoreApplicationModule {
         return provideRetrofitClient(SpaceXApiConstants.BASE_URL, okHttpClient)
                 .create(SpaceXApi::class.java)
     }
-
 
     @Singleton
     @Provides

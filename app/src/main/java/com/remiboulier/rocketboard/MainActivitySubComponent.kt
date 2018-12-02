@@ -1,5 +1,6 @@
 package com.remiboulier.rocketboard
 
+import com.remiboulier.rocketboard.util.ActivityScope
 import dagger.Subcomponent
 import dagger.android.AndroidInjector
 
@@ -8,7 +9,8 @@ import dagger.android.AndroidInjector
  * email: boulier.r.job@gmail.com
  */
 
-@Subcomponent(modules = [MainActivityModule.InjectTestItem::class])
+@ActivityScope
+@Subcomponent(modules = [MainActivityModule::class])
 interface MainActivitySubComponent : AndroidInjector<MainActivity> {
 
     @Subcomponent.Builder
