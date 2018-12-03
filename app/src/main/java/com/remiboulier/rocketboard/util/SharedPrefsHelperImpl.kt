@@ -8,7 +8,7 @@ import android.content.Context.MODE_PRIVATE
  * email: boulier.r.job@gmail.com
  */
 
-class SharedPreferencesHelperImpl(private val context: Context) : SharedPreferencesHelper {
+class SharedPrefsHelperImpl(private val context: Context) : SharedPrefsHelper {
 
     override fun storeIsFirstTime(isFirstTime: Boolean) =
             context.getSharedPreferences(SharedPrefs.FILE_GLOBAL, MODE_PRIVATE)

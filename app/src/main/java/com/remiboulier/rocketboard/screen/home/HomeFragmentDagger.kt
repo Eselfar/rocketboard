@@ -8,7 +8,7 @@ import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.repository.RocketRepository
 import com.remiboulier.rocketboard.network.repository.RocketRepositoryImpl
 import com.remiboulier.rocketboard.util.FragmentScope
-import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.SharedPrefsHelper
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -42,7 +42,7 @@ class HomeFragmentModule {
 
     @Provides
     fun provideHomeFragmentViewModel(rocketRepo: RocketRepository,
-                                     prefsHelper: SharedPreferencesHelper,
+                                     prefsHelper: SharedPrefsHelper,
                                      target: HomeFragment
     ): HomeFragmentViewModel =
             ViewModelProviders

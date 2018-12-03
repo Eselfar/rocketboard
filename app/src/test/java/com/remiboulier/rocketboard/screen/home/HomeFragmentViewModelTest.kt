@@ -4,7 +4,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.remiboulier.rocketboard.network.repository.RocketRepository
 import com.remiboulier.rocketboard.room.entity.RocketEntity
-import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.SharedPrefsHelper
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +27,7 @@ class HomeFragmentViewModelTest {
     lateinit var rocketRepo: RocketRepository
 
     @Mock
-    lateinit var prefsHelper: SharedPreferencesHelper
+    lateinit var prefsHelper: SharedPrefsHelper
 
     @Test
     fun onCleared() {
@@ -207,7 +207,7 @@ class HomeFragmentViewModelTest {
 }
 
 class HomeFragmentViewModelForTest(rocketRepo: RocketRepository,
-                                   prefsHelper: SharedPreferencesHelper)
+                                   prefsHelper: SharedPrefsHelper)
     : HomeFragmentViewModelImpl(rocketRepo, prefsHelper) {
 
     public override fun onCleared() {

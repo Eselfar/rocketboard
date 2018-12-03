@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.repository.RocketRepository
 import com.remiboulier.rocketboard.room.entity.RocketEntity
-import com.remiboulier.rocketboard.util.SharedPreferencesHelper
+import com.remiboulier.rocketboard.util.SharedPrefsHelper
 
 /**
  * Created by Remi BOULIER on 27/11/2018.
@@ -14,7 +14,7 @@ import com.remiboulier.rocketboard.util.SharedPreferencesHelper
  */
 
 open class HomeFragmentViewModelImpl(private val rocketRepo: RocketRepository,
-                                     private val prefsHelper: SharedPreferencesHelper)
+                                     private val prefsHelper: SharedPrefsHelper)
     : ViewModel(), HomeFragmentViewModel {
 
     private val rocketsLiveData = MutableLiveData<List<RocketEntity>>()

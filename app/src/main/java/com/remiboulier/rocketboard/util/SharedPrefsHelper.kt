@@ -1,6 +1,6 @@
 package com.remiboulier.rocketboard.util
 
-interface SharedPreferencesHelper {
+interface SharedPrefsHelper {
 
     fun storeIsFirstTime(isFirstTime: Boolean)
 

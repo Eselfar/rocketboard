@@ -5,8 +5,8 @@ import android.content.Context
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.provideOkHttpClient
 import com.remiboulier.rocketboard.network.provideRetrofitClient
-import com.remiboulier.rocketboard.util.SharedPreferencesHelper
-import com.remiboulier.rocketboard.util.SharedPreferencesHelperImpl
+import com.remiboulier.rocketboard.util.SharedPrefsHelper
+import com.remiboulier.rocketboard.util.SharedPrefsHelperImpl
 import com.remiboulier.rocketboard.util.SpaceXApiConstants
 import dagger.Module
 import dagger.Provides
@@ -48,7 +48,7 @@ class CoreApplicationModule {
 
     @Singleton
     @Provides
-    fun provideSharedPreferenceHelper(context: Context): SharedPreferencesHelper {
-        return SharedPreferencesHelperImpl(context)
+    fun provideSharedPreferenceHelper(context: Context): SharedPrefsHelper {
+        return SharedPrefsHelperImpl(context)
     }
 }
