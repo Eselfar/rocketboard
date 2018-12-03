@@ -1,13 +1,13 @@
 package com.remiboulier.rocketboard.network.repository
 
-import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.*
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.room.dao.LaunchDao
-import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mock
 
 
 /**
@@ -17,43 +17,31 @@ import org.mockito.Mockito.*
 @RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class LaunchRepositoryTestGetLaunches {
 
+    @Mock
+    lateinit var spaceXApi: SpaceXApi
+
+    @Mock
+    lateinit var launchDao: LaunchDao
+
     @Test
     fun getLaunches_call_getLaunchesFromDB() {
+        val repoLaunches = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
+        doNothing().`when`(repoLaunches).getLaunchesFromDB(anyString(), any())
 
-        val repoSpy = spy(LaunchRepositoryImpl(
-                mock(SpaceXApi::class.java),
-                mock(LaunchDao::class.java)))
+        repoLaunches.getLaunches("", false, {})
 
-        val captor = argumentCaptor<(List<LaunchEntity>) -> Unit>()
-
-        doNothing().`when`(repoSpy).getLaunchesFromDB(anyString(), captor.capture())
-
-        repoSpy.getLaunches("", false, {})
-
-        verify(repoSpy, times(1))
-                .getLaunchesFromDB(ArgumentMatchers.anyString(), captor.capture())
-
-        verify(repoSpy, times(0))
-                .getLaunchesFromAPI(ArgumentMatchers.anyString(), captor.capture())
+        verify(repoLaunches, times(1)).getLaunchesFromDB(anyString(), any())
+        verify(repoLaunches, times(0)).getLaunchesFromAPI(anyString(), any())
     }
 
     @Test
     fun getLaunches_call_getLaunchesFromAPI() {
+        val repoLaunches = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
+        doNothing().`when`(repoLaunches).getLaunchesFromAPI(anyString(), any())
 
-        val repoSpy = spy(LaunchRepositoryImpl(
-                mock(SpaceXApi::class.java),
-                mock(LaunchDao::class.java)))
+        repoLaunches.getLaunches("", true, {})
 
-        val captor = argumentCaptor<(List<LaunchEntity>) -> Unit>()
-
-        doNothing().`when`(repoSpy).getLaunchesFromAPI(anyString(), captor.capture())
-
-        repoSpy.getLaunches("", true, {})
-
-        verify(repoSpy, times(0))
-                .getLaunchesFromDB(ArgumentMatchers.anyString(), captor.capture())
-
-        verify(repoSpy, times(1))
-                .getLaunchesFromAPI(ArgumentMatchers.anyString(), captor.capture())
+        verify(repoLaunches, times(0)).getLaunchesFromDB(ArgumentMatchers.anyString(), any())
+        verify(repoLaunches, times(1)).getLaunchesFromAPI(ArgumentMatchers.anyString(), any())
     }
 }

@@ -11,6 +11,7 @@ import com.remiboulier.rocketboard.testutil.RxJavaTestSetup
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -39,9 +40,15 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
     @Mock
     lateinit var rocketDao: RocketDao
 
+    lateinit var rocketRepo: RocketRepositoryImpl
+
+    @Before
+    fun initTest() {
+        rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
+    }
+
     @Test
     fun getRockets_update_networkStateLiveData() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         val liveData = rocketRepo.getNetworkStateLiveData()
         doNothing().`when`(rocketRepo).getRocketsFromDB(any())
 
@@ -54,7 +61,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRockets_calls_getLaunchesFromDB() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         doNothing().`when`(rocketRepo).getRocketsFromDB(any())
 
         rocketRepo.getRockets(false, {})
@@ -65,7 +71,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRockets_calls_getLaunchesFromAPI() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         doNothing().`when`(rocketRepo).getRocketsFromAPI(any())
 
         rocketRepo.getRockets(true, {})
@@ -76,7 +81,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRocketsFromDB_onSuccess() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         val rockets = listOf<RocketEntity>()
         doNothing().`when`(rocketRepo).onGetFromDBSuccess(anyList(), any())
         val listCaptor = argumentCaptor<List<RocketEntity>>()
@@ -91,7 +95,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRocketFromDB_on_throw_exception() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         Mockito.`when`(rocketDao.getAllAsync())
                 .thenReturn(Single.error(Mockito.mock(Exception::class.java)))
         doNothing().`when`(rocketRepo).onRxError(any())
@@ -103,7 +106,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRocketFromAPI_on_success() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         val rocketsDto = listOf<RocketDto>()
         doNothing().`when`(rocketRepo).onGetFromAPISuccess(anyList(), any())
         val listCaptor = argumentCaptor<List<RocketDto>>()
@@ -118,7 +120,6 @@ class RocketRepositoryImplTest : RxJavaTestSetup() {
 
     @Test
     fun getRocketFromAPI_on_throw_exception() {
-        val rocketRepo = spy(RocketRepositoryImpl(spaceXApi, rocketDao))
         Mockito.`when`(spaceXApi.getRockets())
                 .thenReturn(Observable.error(Mockito.mock(Exception::class.java)))
         doNothing().`when`(rocketRepo).onRxError(any())

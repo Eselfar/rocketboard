@@ -1,18 +1,20 @@
 package com.remiboulier.rocketboard.network.repository
 
-import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.*
 import com.remiboulier.rocketboard.network.SpaceXApi
 import com.remiboulier.rocketboard.network.dto.LaunchDto
 import com.remiboulier.rocketboard.room.dao.LaunchDao
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.testutil.RxJavaTestSetup
 import io.reactivex.Observable
+import junit.framework.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.*
+
 
 /**
  * Created by Remi BOULIER on 30/11/2018.
@@ -22,12 +24,6 @@ import org.mockito.Mockito.*
 @RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
 
-    /**
-     * Workaround to prevent any(Class) from Mockito to throw an IllegalStateException
-     * See https://stackoverflow.com/a/48805160/1827254
-     */
-    private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
-
     @Mock
     lateinit var launchDao: LaunchDao
 
@@ -36,48 +32,41 @@ class LaunchRepositoryTestGetLaunchesFromAPI : RxJavaTestSetup() {
 
     @Test
     fun getLaunchesFromAPI_on_success() {
-        val launches = MutableList(3) { mock(LaunchDto::class.java) }
+        val repoLaunches = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
+        val launches = MutableList(3) { Mockito.mock(LaunchDto::class.java) }
         Mockito.`when`(spaceXApi.getLaunches())
                 .thenReturn(Observable.just(launches))
-        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
+        doNothing().`when`(repoLaunches).onGetFromAPISuccess(anyString(), anyList(), any())
 
-        doNothing().`when`(repo).onGetFromAPISuccess(anyString(), anyList(), any())
+        repoLaunches.getLaunchesFromAPI("", {})
 
-        repo.getLaunchesFromAPI("", {})
-
-        verify(repo, times(0))
-                .onGetFromDBSuccess(anyString(), anyList(), any())
-        verify(repo, times(1))
-                .onGetFromAPISuccess(anyString(), anyList(), any())
+        verify(repoLaunches, times(0)).onGetFromDBSuccess(anyString(), anyList(), any())
+        verify(repoLaunches, times(1)).onGetFromAPISuccess(anyString(), anyList(), any())
     }
 
     @Test
     fun getLaunchesFromAPI_on_throw_exception() {
+        val repoLaunches = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
         Mockito.`when`(spaceXApi.getLaunches())
-                .thenReturn(Observable.error(mock(Exception::class.java)))
+                .thenReturn(Observable.error(Mockito.mock(Exception::class.java)))
 
-        val repo = spy(LaunchRepositoryImpl(spaceXApi, launchDao))
+        repoLaunches.getLaunchesFromAPI("", {})
 
-        repo.getLaunchesFromAPI("", {})
-
-        verify(repo, times(1)).onRxError(any(Throwable::class.java))
+        verify(repoLaunches, times(1)).onRxError(any())
     }
 
     @Test
     fun filterEntities_filters_correctly() {
+        val repoLaunches = LaunchRepositoryImpl(spaceXApi, launchDao)
         val rocketId = "42"
         val rocketIds = listOf(rocketId, "0", rocketId)
         val launches = List(rocketIds.size) { index ->
             LaunchEntity().apply { this.rocketId = rocketIds[index] }
         }
+        val res = repoLaunches.filterEntities(rocketId, launches)
 
-        val repo = LaunchRepositoryImpl(spaceXApi, launchDao)
-        val res = repo.filterEntities(rocketId, launches)
-
-
-        assert(res.size == 2)
-
+        Assert.assertTrue(res.size == 2)
         val group = res.groupingBy { it.rocketId }.eachCount()
-        assert(group.size == 1 && group[rocketId] == 2)
+        Assert.assertTrue(group.size == 1 && group[rocketId] == 2)
     }
 }
