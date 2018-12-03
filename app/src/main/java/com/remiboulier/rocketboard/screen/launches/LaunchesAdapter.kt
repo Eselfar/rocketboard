@@ -18,8 +18,8 @@ import com.github.mikephil.charting.formatter.IValueFormatter
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.toReadableDate
 import com.remiboulier.rocketboard.extension.toString
+import com.remiboulier.rocketboard.network.GlideRequests
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
-import com.remiboulier.rocketboard.util.GlideRequests
 import kotlinx.android.synthetic.main.item_recycler_chart.view.*
 import kotlinx.android.synthetic.main.item_recycler_description.view.*
 import kotlinx.android.synthetic.main.item_recycler_launches.view.*

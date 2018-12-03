@@ -21,20 +21,13 @@ fun DialogContainer.displayWelcomeDialog(context: Context,
                 .onPositive { _, _ -> onPositive() }
                 .build())
 
-
-fun DialogContainer.displayProgressDialog(context: Context) =
-        showDialog(MaterialDialog.Builder(context)
-                .title(R.string.app_name)
-                .content(R.string.please_wait)
-                .cancelable(false)
-                .progress(true, 0)
-                .build())
-
 fun DialogContainer.displayErrorDialog(context: Context,
-                                       @StringRes msg: Int) =
-        showDialog(MaterialDialog.Builder(context)
-                .title(R.string.app_name)
-                .cancelable(true)
-                .content(context.getString(msg))
-                .positiveText(R.string.got_it)
-                .build())
+                                       @StringRes msg: Int,
+                                       callback: (MaterialDialog.SingleButtonCallback)? = null) =
+        showDialog(MaterialDialog.Builder(context).apply {
+            title(R.string.app_name)
+            cancelable(true)
+            content(context.getString(msg))
+            callback?.let { onPositive(callback) }
+            positiveText(R.string.got_it)
+        }.build())

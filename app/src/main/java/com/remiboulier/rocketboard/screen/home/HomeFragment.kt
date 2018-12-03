@@ -28,7 +28,8 @@ class HomeFragment : BaseMainFragment() {
     lateinit var viewModel: HomeFragmentViewModel
 
     private var adapter: RocketAdapter? = null
-    private var container: DialogContainer = DialogContainer()
+
+    private val container: DialogContainer = DialogContainer()
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -66,8 +67,8 @@ class HomeFragment : BaseMainFragment() {
         else updateState(state)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
+        super.onDestroyView()
         adapter = null
         container.dismissDialog()
     }

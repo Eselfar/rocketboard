@@ -14,14 +14,14 @@ import com.brandongogetap.stickyheaders.StickyLayoutManager
 import com.github.mikephil.charting.data.BarEntry
 import com.remiboulier.rocketboard.R
 import com.remiboulier.rocketboard.extension.displayErrorDialog
+import com.remiboulier.rocketboard.network.GlideApp
+import com.remiboulier.rocketboard.network.GlideRequests
 import com.remiboulier.rocketboard.network.NetworkState
 import com.remiboulier.rocketboard.network.Status
 import com.remiboulier.rocketboard.room.entity.LaunchEntity
 import com.remiboulier.rocketboard.screen.BaseMainFragment
 import com.remiboulier.rocketboard.util.BundleConstants
 import com.remiboulier.rocketboard.util.DialogContainer
-import com.remiboulier.rocketboard.util.GlideApp
-import com.remiboulier.rocketboard.util.GlideRequests
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_launches.*
 import javax.inject.Inject
@@ -34,7 +34,8 @@ class LaunchesFragment : BaseMainFragment() {
     private lateinit var rocketId: String
 
     private var adapter: LaunchAdapter? = null
-    private var container: DialogContainer = DialogContainer()
+
+    private val container: DialogContainer = DialogContainer()
 
     companion object {
         fun newInstance(rocketId: String,
@@ -92,8 +93,8 @@ class LaunchesFragment : BaseMainFragment() {
     fun updateChart(launchesPerYear: List<BarEntry>) = adapter?.updateChart(launchesPerYear)
     fun updateUI(launches: List<LaunchEntity>) = adapter?.updateLaunches(launches)
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
+        super.onDestroyView()
         adapter = null
         container.dismissDialog()
     }
